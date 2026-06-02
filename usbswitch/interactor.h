@@ -3,13 +3,11 @@
 #include <QObject>
 #include <QPointer>
 
+#include "deviceconnection.h"
+
 QT_BEGIN_NAMESPACE
 class QTimer;
 QT_END_NAMESPACE
-
-namespace usbswitch::details::lowlevel {
-class DeviceConnection;
-}
 
 namespace usbswitch::details {
 

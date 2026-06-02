@@ -11,7 +11,11 @@ INCLUDEPATH += "hidapi/hidapi"
 win32 {
     SOURCES += hidapi/windows/hid.c
     # #pragma comment (lib, "Setupapi.lib")
-    LIBS += /LIB:Setupapi.lib
+    win32:*-g++* {
+        LIBS += -lsetupapi
+    } else {
+        LIBS += /LIB:Setupapi.lib
+    }
     # -lhid # This one for DDK. For non-DDK it is not required
 }
 
