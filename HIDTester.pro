@@ -15,10 +15,10 @@ SOURCES += \
         usbswitch/usb-upstream-switch.cpp \
         main.cpp
 
-resources.files = main.qml \
-        NoDevicePage.qml \
-        DeviceControlPage.qml \
-        ErrorPage.qml
+resources.files = qml/main.qml \
+        qml/NoDevicePage.qml \
+        qml/DeviceControlPage.qml \
+        qml/ErrorPage.qml
 resources.prefix = /$${TARGET}
 RESOURCES += resources
 

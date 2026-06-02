@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 
     QGuiApplication app(argc, argv);
 
-    const QUrl url(u"qrc:/YepkitUSBSwitch/main.qml"_qs);
+    const QUrl url(u"qrc:/YepkitUSBSwitch/qml/main.qml"_qs);
     QQmlApplicationEngine engine;
 
     qmlRegisterSingletonType<usbswitch::USBUpstreamSwitch>("com.project.USBSwitch", 1, 0, "USBSwitch", [&app](QQmlEngine * /*engine*/, QJSEngine *) -> QObject * {
