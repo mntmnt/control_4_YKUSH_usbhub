@@ -59,12 +59,12 @@ void USBUpstreamSwitch::stopService() {
 
 
 void USBUpstreamSwitch::enableUsbPort(int port) {
-    interactor->togglePort(port, true);
+    QMetaObject::invokeMethod(interactor, [=,this] { interactor->togglePort(port, true); }, Qt::QueuedConnection);
 }
 
 
 void USBUpstreamSwitch::disableUsbPort(int port) {
-    interactor->togglePort(port, false);
+    QMetaObject::invokeMethod(interactor, [=,this] { interactor->togglePort(port, false); }, Qt::QueuedConnection);
 }
 
 }

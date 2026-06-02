@@ -23,18 +23,17 @@ Connector::Connector(QObject *parent):
 Connector::~Connector() = default;
 
 
-usbswitch::details::lowlevel::DeviceConnection *Connector::deviceConnection() const {
-    return currentHandler;
-}
-
-
 QString Connector::getDeviceInfo() const {
-    return currentHandler ? currentHandler->details() : QString{};
+    std::lock_guard guard(cachedInfoMutex);
+
+    return cachedInfo;
 }
 
 
 void Connector::wait4device() {
     Q_ASSERT( timer->isSingleShot() );
+
+    setCachedInfo(QString{});
 
     if ( currentHandler ) {
         delete currentHandler;
@@ -51,6 +50,7 @@ void Connector::processDeviceList() {
     } else if ( enumerator->size() == 1 ) {
         if ( currentHandler = enumerator->openDevice(); currentHandler != nullptr ) {
             timer->stop();
+            setCachedInfo(currentHandler->details());
             emit connected(currentHandler);
             return;
         } else {
@@ -59,6 +59,13 @@ void Connector::processDeviceList() {
         }
     }
     wait4device();
+}
+
+
+void Connector::setCachedInfo(const QString & deviceInfo) {
+    std::lock_guard guard(cachedInfoMutex);
+
+    cachedInfo = deviceInfo;
 }
 
 }

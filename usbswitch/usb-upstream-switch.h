@@ -49,7 +49,7 @@ public slots:
 
 private:
     std::atomic<bool> connected { false };
-    std::atomic<unsigned> cachedRotation { 0 };
+
     details::Connector  * connector { nullptr };
     details::Interactor * interactor { nullptr };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <mutex>
 
 QT_BEGIN_NAMESPACE
 class QTimer;
@@ -19,8 +20,6 @@ public:
     explicit Connector(QObject *parent = nullptr);
     ~Connector();
 
-    usbswitch::details::lowlevel::DeviceConnection * deviceConnection() const;
-
     QString getDeviceInfo() const;
 
 signals:
@@ -35,9 +34,13 @@ private slots:
     void processDeviceList();
 
 private:
+    void setCachedInfo(const QString &);
+
     QTimer * timer;
     const std::unique_ptr<usbswitch::details::lowlevel::DeviceEnumerator> enumerator;
     usbswitch::details::lowlevel::DeviceConnection * currentHandler { nullptr };
+    mutable std::mutex cachedInfoMutex;
+    QString cachedInfo;
 };
 
 }
