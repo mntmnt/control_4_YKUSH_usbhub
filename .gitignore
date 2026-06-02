@@ -1,2 +1,5 @@
 build/
 YKUSH_usb/
+deploy/
+YKUSH_usb/
+__local_env.bat

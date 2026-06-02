@@ -1,0 +1,6 @@
+SET CURRENT_DIR=%~dp0
+
+SET QT_BIN=d:\WinDev\Qt\6.5.1\msvc2019_64\bin\
+SET MSVC_VARS_PATH=d:\WinDev\VisualStudio\IDE\VC\Auxiliary\Build\vcvarsall.bat
+
+SET TARGET_PATH=%CURRENT_DIR%build\Desktop_Qt_6_5_1_MSVC2019_64bit-Release\release\
