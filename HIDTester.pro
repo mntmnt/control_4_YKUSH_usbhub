@@ -18,7 +18,8 @@ SOURCES += \
 resources.files = qml/main.qml \
         qml/NoDevicePage.qml \
         qml/DeviceControlPage.qml \
-        qml/ErrorPage.qml
+        qml/ErrorPage.qml \
+        qml/PortControlsArea.qml
 resources.prefix = /$${TARGET}
 RESOURCES += resources
 
