@@ -3,6 +3,10 @@ import QtQuick.Controls
 import com.project.USBSwitch
 
 Item {
+    readonly property color uncheckedButtonColor:    "#ADADAD"
+    readonly property color checkedConnectedColor:   "#2AA63E"
+    readonly property color checkedUnconnectedColor: "salmon"
+
     height: parent ? parent.height : 0
     width:  parent ? parent.width  : 0
 
@@ -13,6 +17,7 @@ Item {
             lastRestatus.color = "white";
             updateState(port, enabled)
         }
+
         function onErrorReported(message) { // Signal handler for mySignal
             lastRestatus.text = qsTr("ERROR: ") + message;
             lastRestatus.color = "#FB2C36";
@@ -63,9 +68,7 @@ Item {
 
         RoundButton {
             id: port1off
-            // icon.name: "stop"
-            // icon.width: 32
-            // icon.height: 32
+
             text: qsTr("OFF")
             width: 80
             height: 80
@@ -74,14 +77,12 @@ Item {
             font.pointSize: 18
             onClicked: USBSwitch.disableUsbPort(1)
 
-            palette.button: checked ? "salmon" : "lightgrey"
+            palette.button: checked ? checkedUnconnectedColor : uncheckedButtonColor
         }
 
         RoundButton {
             id: port1on
-            // icon.name: "stop"
-            // icon.width: 32
-            // icon.height: 32
+
             text: qsTr("ON")
             width: 80
             height: 80
@@ -90,10 +91,10 @@ Item {
             font.pointSize: 18
             onClicked: USBSwitch.enableUsbPort(1)
 
-            palette.button: checked ? "#2AA63E" : "lightgrey"
+            palette.button: checked ? checkedConnectedColor : uncheckedButtonColor
         }
 
-        //-------
+        //------- 2
         Label {
             text: qsTr("Port 2")
             font.pointSize: 20
@@ -105,9 +106,7 @@ Item {
 
         RoundButton {
             id: port2off
-            // icon.name: "stop"
-            // icon.width: 32
-            // icon.height: 32
+
             text: qsTr("OFF")
             width: 80
             height: 80
@@ -116,14 +115,12 @@ Item {
             font.pointSize: 18
             onClicked: USBSwitch.disableUsbPort(2)
 
-            palette.button: checked ? "salmon" : "lightgrey"
+            palette.button: checked ? checkedUnconnectedColor : uncheckedButtonColor
         }
 
         RoundButton {
             id: port2on
-            // icon.name: "stop"
-            // icon.width: 32
-            // icon.height: 32
+
             text: qsTr("ON")
             width: 80
             height: 80
@@ -132,10 +129,10 @@ Item {
             font.pointSize: 18
             onClicked: USBSwitch.enableUsbPort(2)
 
-            palette.button: checked ? "#2AA63E" : "lightgrey"
+            palette.button: checked ? checkedConnectedColor : uncheckedButtonColor
         }
 
-        //-------3
+        //------- 3
         Label {
             text: qsTr("Port 3")
             font.pointSize: 20
@@ -147,9 +144,7 @@ Item {
 
         RoundButton {
             id: port3off
-            // icon.name: "stop"
-            // icon.width: 32
-            // icon.height: 32
+
             text: qsTr("OFF")
             width: 80
             height: 80
@@ -158,14 +153,12 @@ Item {
             font.pointSize: 18
             onClicked: USBSwitch.disableUsbPort(3)
 
-            palette.button: checked ? "salmon" : "lightgrey"
+            palette.button: checked ? checkedUnconnectedColor : uncheckedButtonColor
         }
 
         RoundButton {
             id: port3on
-            // icon.name: "stop"
-            // icon.width: 32
-            // icon.height: 32
+
             text: qsTr("ON")
             width: 80
             height: 80
@@ -174,9 +167,8 @@ Item {
             font.pointSize: 18
             onClicked: USBSwitch.enableUsbPort(3)
 
-            palette.button: checked ? "#2AA63E" : "lightgrey"
+            palette.button: checked ? checkedConnectedColor : uncheckedButtonColor
         }
-
 
     }
 
