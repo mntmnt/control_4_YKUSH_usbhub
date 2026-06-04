@@ -46,6 +46,12 @@ Item {
         anchors.top:  parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: 20
+        width: Math.max(0, (parent ? parent.width : 0) - 40)
+        horizontalAlignment: Text.AlignHCenter
+        wrapMode: Text.Wrap
+        maximumLineCount: 3
+        elide: Text.ElideRight
+        clip: true
         color: "white"
         font.bold: true
         font.pointSize: 19
