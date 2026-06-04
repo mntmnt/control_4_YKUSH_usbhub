@@ -6,6 +6,9 @@ Item {
     readonly property color uncheckedButtonColor:    "#ADADAD"
     readonly property color checkedConnectedColor:   "#2AA63E"
     readonly property color checkedUnconnectedColor: "salmon"
+    readonly property int controlsOuterMargin: 20
+    readonly property int controlsSpacing: 20
+    readonly property real controlCardWidth: Math.max(140, Math.min(220, width - (controlsOuterMargin * 2)))
 
     height: parent ? parent.height : 0
     width:  parent ? parent.width  : 0
@@ -58,124 +61,183 @@ Item {
         text: USBSwitch.deviceInfo
     }
 
-    Grid {
-        anchors.centerIn: parent
-        columns: 3
-        spacing: 20
+    Item {
+        id: controlsArea
+        anchors.top: infoLabel.bottom
+        anchors.bottom: lastRestatus.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.topMargin: 20
+        anchors.bottomMargin: 20
+        anchors.leftMargin: controlsOuterMargin
+        anchors.rightMargin: controlsOuterMargin
+        clip: true
 
-        Label {
-            text: qsTr("Port 1")
-            font.pointSize: 20
-            width: 80
-            height: 80
-            color: "white"
-            verticalAlignment: Qt.AlignVCenter
+        Flow {
+            id: portsFlow
+            flow: Flow.TopToBottom
+            width: childrenRect.width
+            height: controlsArea.height
+            x: (controlsArea.width - width) / 2
+            y: (controlsArea.height - childrenRect.height) / 2
+            spacing: controlsSpacing
+
+            Item {
+                width: Math.max(140, controlCardWidth)
+                height: port1Column.implicitHeight
+
+            Column {
+                id: port1Column
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 12
+
+                Label {
+                    text: qsTr("Port 1")
+                    width: parent.parent.width
+                    horizontalAlignment: Text.AlignHCenter
+                    wrapMode: Text.Wrap
+                    color: "white"
+                    font.pointSize: 20
+                    font.bold: true
+                }
+
+                Row {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: 12
+
+                    RoundButton {
+                        id: port1off
+                        text: qsTr("OFF")
+                        width: Math.max(64, (parent.parent.parent.width - parent.spacing) / 2)
+                        height: width
+                        checkable: true
+                        checked: false
+                        font.pointSize: width < 72 ? 14 : 18
+                        onClicked: USBSwitch.disableUsbPort(1)
+
+                        palette.button: checked ? checkedUnconnectedColor : uncheckedButtonColor
+                    }
+
+                    RoundButton {
+                        id: port1on
+                        text: qsTr("ON")
+                        width: Math.max(64, (parent.parent.parent.width - parent.spacing) / 2)
+                        height: width
+                        checkable: true
+                        checked: false
+                        font.pointSize: width < 72 ? 14 : 18
+                        onClicked: USBSwitch.enableUsbPort(1)
+
+                        palette.button: checked ? checkedConnectedColor : uncheckedButtonColor
+                    }
+                }
+            }
         }
 
-        RoundButton {
-            id: port1off
+            Item {
+                width: Math.max(140, controlCardWidth)
+                height: port2Column.implicitHeight
 
-            text: qsTr("OFF")
-            width: 80
-            height: 80
-            checkable: true
-            checked: false
-            font.pointSize: 18
-            onClicked: USBSwitch.disableUsbPort(1)
+            Column {
+                id: port2Column
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 12
 
-            palette.button: checked ? checkedUnconnectedColor : uncheckedButtonColor
+                Label {
+                    text: qsTr("Port 2")
+                    width: parent.parent.width
+                    horizontalAlignment: Text.AlignHCenter
+                    wrapMode: Text.Wrap
+                    color: "white"
+                    font.pointSize: 20
+                    font.bold: true
+                }
+
+                Row {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: 12
+
+                    RoundButton {
+                        id: port2off
+                        text: qsTr("OFF")
+                        width: Math.max(64, (parent.parent.parent.width - parent.spacing) / 2)
+                        height: width
+                        checkable: true
+                        checked: false
+                        font.pointSize: width < 72 ? 14 : 18
+                        onClicked: USBSwitch.disableUsbPort(2)
+
+                        palette.button: checked ? checkedUnconnectedColor : uncheckedButtonColor
+                    }
+
+                    RoundButton {
+                        id: port2on
+                        text: qsTr("ON")
+                        width: Math.max(64, (parent.parent.parent.width - parent.spacing) / 2)
+                        height: width
+                        checkable: true
+                        checked: false
+                        font.pointSize: width < 72 ? 14 : 18
+                        onClicked: USBSwitch.enableUsbPort(2)
+
+                        palette.button: checked ? checkedConnectedColor : uncheckedButtonColor
+                    }
+                }
+            }
         }
 
-        RoundButton {
-            id: port1on
+            Item {
+                width: Math.max(140, controlCardWidth)
+                height: port3Column.implicitHeight
 
-            text: qsTr("ON")
-            width: 80
-            height: 80
-            checkable: true
-            checked: false
-            font.pointSize: 18
-            onClicked: USBSwitch.enableUsbPort(1)
+            Column {
+                id: port3Column
+                anchors.horizontalCenter: parent.horizontalCenter
+                spacing: 12
 
-            palette.button: checked ? checkedConnectedColor : uncheckedButtonColor
+                Label {
+                    text: qsTr("Port 3")
+                    width: parent.parent.width
+                    horizontalAlignment: Text.AlignHCenter
+                    wrapMode: Text.Wrap
+                    color: "white"
+                    font.pointSize: 20
+                    font.bold: true
+                }
+
+                Row {
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    spacing: 12
+
+                    RoundButton {
+                        id: port3off
+                        text: qsTr("OFF")
+                        width: Math.max(64, (parent.parent.parent.width - parent.spacing) / 2)
+                        height: width
+                        checkable: true
+                        checked: false
+                        font.pointSize: width < 72 ? 14 : 18
+                        onClicked: USBSwitch.disableUsbPort(3)
+
+                        palette.button: checked ? checkedUnconnectedColor : uncheckedButtonColor
+                    }
+
+                    RoundButton {
+                        id: port3on
+                        text: qsTr("ON")
+                        width: Math.max(64, (parent.parent.parent.width - parent.spacing) / 2)
+                        height: width
+                        checkable: true
+                        checked: false
+                        font.pointSize: width < 72 ? 14 : 18
+                        onClicked: USBSwitch.enableUsbPort(3)
+
+                        palette.button: checked ? checkedConnectedColor : uncheckedButtonColor
+                    }
+                }
+            }
+            }
         }
-
-        //------- 2
-        Label {
-            text: qsTr("Port 2")
-            font.pointSize: 20
-            width: 80
-            height: 80
-            color: "white"
-            verticalAlignment: Qt.AlignVCenter
-        }
-
-        RoundButton {
-            id: port2off
-
-            text: qsTr("OFF")
-            width: 80
-            height: 80
-            checkable: true
-            checked: false
-            font.pointSize: 18
-            onClicked: USBSwitch.disableUsbPort(2)
-
-            palette.button: checked ? checkedUnconnectedColor : uncheckedButtonColor
-        }
-
-        RoundButton {
-            id: port2on
-
-            text: qsTr("ON")
-            width: 80
-            height: 80
-            checkable: true
-            checked: false
-            font.pointSize: 18
-            onClicked: USBSwitch.enableUsbPort(2)
-
-            palette.button: checked ? checkedConnectedColor : uncheckedButtonColor
-        }
-
-        //------- 3
-        Label {
-            text: qsTr("Port 3")
-            font.pointSize: 20
-            width: 80
-            height: 80
-            color: "white"
-            verticalAlignment: Qt.AlignVCenter
-        }
-
-        RoundButton {
-            id: port3off
-
-            text: qsTr("OFF")
-            width: 80
-            height: 80
-            checkable: true
-            checked: false
-            font.pointSize: 18
-            onClicked: USBSwitch.disableUsbPort(3)
-
-            palette.button: checked ? checkedUnconnectedColor : uncheckedButtonColor
-        }
-
-        RoundButton {
-            id: port3on
-
-            text: qsTr("ON")
-            width: 80
-            height: 80
-            checkable: true
-            checked: false
-            font.pointSize: 18
-            onClicked: USBSwitch.enableUsbPort(3)
-
-            palette.button: checked ? checkedConnectedColor : uncheckedButtonColor
-        }
-
     }
 
     Label {
