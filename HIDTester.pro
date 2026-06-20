@@ -1,11 +1,15 @@
 QT += quick quickcontrols2
 # CONFIG+=qml_debug
 # CONFIG += console
+
 TARGET = YepkitUSBSwitch
 VERSION = 0.5
 CONFIG += c++20  \
           warn_on \
           thread
+
+# Enable/Disable system tray support. Comment it to disable
+CONFIG += system_tray
 
 SOURCES += \
         usbswitch/deviceconnection.cpp \
@@ -20,6 +24,14 @@ resources.files = qml/main.qml \
         qml/DeviceControlPage.qml \
         qml/ErrorPage.qml \
         qml/PortControlsArea.qml
+
+contains(CONFIG, system_tray) {
+    QT += widgets
+    DEFINES += MY_SYSTEM_TRAY_SUPPORT
+    resources.files += qml/SystemTray.qml \
+        UsbIcon.ico
+}
+
 resources.prefix = /$${TARGET}
 RESOURCES += resources
 

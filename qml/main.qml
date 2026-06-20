@@ -3,10 +3,37 @@ import QtQuick.Controls
 import com.project.USBSwitch
 
 ApplicationWindow {
+    id: window
     width:  640
     height: 700
     visible: true
     title: qsTr("Yepkit USB Upstream Switch")
+
+    function toggleVisibility() {
+        if (window.visible && window.visibility !== Window.Minimized) {
+            window.hide()
+        } else {
+            window.show()
+            window.raise()
+            window.requestActivate()
+        }
+    }
+
+    onClosing: function(close) {
+        // Hide to tray instead of quitting when the tray is available.
+        if (trayLoader.item && trayLoader.item.available) {
+            close.accepted = false
+            window.hide()
+        }
+    }
+
+    Loader {
+        id: trayLoader
+        active: systemTraySupport
+        source: systemTraySupport ? "SystemTray.qml" : ""
+
+        onLoaded: item.targetWindow = window
+    }
 
     StackView {
         id: contentFrame

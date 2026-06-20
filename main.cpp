@@ -1,4 +1,8 @@
+#ifdef MY_SYSTEM_TRAY_SUPPORT
+#include <QApplication>
+#else
 #include <QGuiApplication>
+#endif
 #include <QQmlApplicationEngine>
 
 #include <QQmlContext>
@@ -9,14 +13,23 @@
 int main(int argc, char *argv[]) {
 //    QQuickStyle::setStyle(QStringLiteral("Imagine"));
 
+#ifdef MY_SYSTEM_TRAY_SUPPORT
+    QApplication app(argc, argv);
+    // Keep running when the main window is hidden to the system tray.
+    QApplication::setQuitOnLastWindowClosed(false);
+    constexpr bool systemTraySupport = true;
+#else
     QGuiApplication app(argc, argv);
+    constexpr bool systemTraySupport = false;
+#endif
 
     const QUrl url(u"qrc:/YepkitUSBSwitch/qml/main.qml"_qs);
     QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty("systemTraySupport", systemTraySupport);
 
     qmlRegisterSingletonType<usbswitch::USBUpstreamSwitch>("com.project.USBSwitch", 1, 0, "USBSwitch", [&app](QQmlEngine * /*engine*/, QJSEngine *) -> QObject * {
         auto encoder = new usbswitch::USBUpstreamSwitch;
-        QObject::connect(&app, &QGuiApplication::aboutToQuit,  encoder, &usbswitch::USBUpstreamSwitch::stopService, Qt::DirectConnection);
+        QObject::connect(&app, &QCoreApplication::aboutToQuit,  encoder, &usbswitch::USBUpstreamSwitch::stopService, Qt::DirectConnection);
         return encoder;
     });
 
