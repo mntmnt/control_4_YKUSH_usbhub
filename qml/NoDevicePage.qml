@@ -11,6 +11,11 @@ Item {
         color: "red"
     }
 
+    AnimatedProgressBorder {
+        anchors.fill: parent
+        anchors.margins: 0
+    }
+
     Label {
         anchors.top:  parent.top
         anchors.horizontalCenter: parent.horizontalCenter
@@ -25,5 +30,4 @@ Item {
         id: busyIndicator
         anchors.centerIn: parent
     }
-
 }

@@ -23,6 +23,7 @@ resources.files = qml/main.qml \
         qml/NoDevicePage.qml \
         qml/DeviceControlPage.qml \
         qml/ErrorPage.qml \
+        qml/AnimatedProgressBorder.qml \
         qml/PortControlsArea.qml
 
 contains(CONFIG, system_tray) {
