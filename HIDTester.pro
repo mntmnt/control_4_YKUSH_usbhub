@@ -59,6 +59,9 @@ HEADERS += \
 include(hidapi.pri)
 
 DISTFILES += +\
+    deploy-data/installRule.sh \
+    deploy-data/98-ykshusbhub-udev.rules \
+    deploy-data/README_PERMISSION.md
 
 QMAKE_TARGET_COMPANY = "Mag-Instruments, Inc"
 QMAKE_TARGET_DESCRIPTION = "Mag-Instruments software"
