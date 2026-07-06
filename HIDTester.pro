@@ -2,6 +2,14 @@ QT += quick quickcontrols2
 # CONFIG+=qml_debug
 # CONFIG += console
 
+# On older versions there is a bug on Linux+Wayland: a hidden window doesn't re-appear on further show() call
+linux {
+    !versionAtLeast(QT_VERSION, 6.11.1) {
+        error("On Linux, Qt 6.11.1 or newer is required. Current Qt version: $$QT_VERSION")
+    }
+}
+
+
 TARGET = YepkitUSBSwitch
 VERSION = 0.5
 CONFIG += c++20  \
