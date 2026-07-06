@@ -23,7 +23,8 @@ ApplicationWindow {
         // Hide to tray instead of quitting when the tray is available.
         if (trayLoader.item && trayLoader.item.available) {
             close.accepted = false
-            window.hide()
+            // Just in case postpone it to the event loop. To avoid issues on Wayland
+            Qt.callLater(function() { window.visible = false; })
         }
     }
 

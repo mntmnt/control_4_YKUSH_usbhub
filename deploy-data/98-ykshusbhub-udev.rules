@@ -1,0 +1,8 @@
+#
+# USB Switchable Hub, used through HIDAPI's Linux hidraw backend.
+# Few variants of rules are provided, depending on the kernel version and the device type.
+# But "usb" definitely works for all of them, and is the simplest one. So it's the default.
+#
+
+#KERNEL=="hidraw*", ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="f2f7", MODE="0666", TAG+="uaccess"
+SUBSYSTEMS=="usb", ATTRS{idVendor}=="04d8", ATTRS{idProduct}=="f2f7", MODE="0666"
