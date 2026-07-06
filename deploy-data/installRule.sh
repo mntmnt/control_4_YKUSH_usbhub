@@ -14,7 +14,7 @@ function checkRuleExists() {
 	else
 		echo "NO $FILENAME in current directory"
 		echo "It's content should be simple. Like below:"
-		echo 'SUBSYSTEMS=="usb", ATTRS{idVendor}=="04D8", MODE="0666"'
+		echo 'SUBSYSTEMS=="usb", ATTRS{idVendor}=="04d8", MODE="0666"'
 		echo
 		echo 'read README for details'
 		return 1
@@ -43,6 +43,7 @@ function uninstall() {
 
 function restartRules() {
 	udevadm control --reload && udevadm trigger
+	udevadm control --reload-rules && udevadm trigger
 }
 
 if ! [ -z "${1+x}" ]; then

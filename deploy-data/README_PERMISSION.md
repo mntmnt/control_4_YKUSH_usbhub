@@ -54,5 +54,23 @@ sudo ./installRule.sh uninstall
 ```
 
 
+## Useful Commands
+
+```sh
+dmesg -w
+```
+
+If device is detected as "hidraw*" the output may be the following
+```
+[ 1741.552496] usb 1-13.1: new full-speed USB device number 17 using xhci_hcd
+[ 1741.639685] usb 1-13.1: New USB device found, idVendor=0483, idProduct=3efb, bcdDevice= 3.28
+[ 1741.639702] usb 1-13.1: New USB device strings: Mfr=1, Product=2, SerialNumber=3
+[ 1741.639708] usb 1-13.1: Product: (dev) pVNA 6G j701HID
+[ 1741.639713] usb 1-13.1: Manufacturer: pocketvna.com
+[ 1741.639716] usb 1-13.1: SerialNumber: 205A3681574B
+[ 1741.646947] hid-generic 0003:0483:3EFB.0007: hiddev3,hidraw6: USB HID v1.11 Device [pocketvna.com (dev) pVNA 6G j701HID] on usb-0000:00:14.0-13.1/input0
+```
+
+Otherwise the latest `hid-generic...` line would be missing. In this case device usually can be opened using libusb backend only!
 
 
