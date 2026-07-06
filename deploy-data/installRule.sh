@@ -42,8 +42,8 @@ function uninstall() {
 }
 
 function restartRules() {
+        # seems `--reload' is deprecated. Now it's `--reload-rules'. But the former is universal right now and works on all systems I have
 	udevadm control --reload && udevadm trigger
-	udevadm control --reload-rules && udevadm trigger
 }
 
 if ! [ -z "${1+x}" ]; then

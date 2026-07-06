@@ -33,7 +33,7 @@ linux {
        CONFIG += link_pkgconfig
        PKGCONFIG += libusb-1.0
        SOURCES += hidapi/libusb/hid.c
-       LIBS += -lusb-1.0
+       # LIBS += -lusb-1.0
     } else {
         message("using default linux backend")
         SOURCES += hidapi/linux/hid.c
