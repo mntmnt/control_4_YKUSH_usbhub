@@ -15,6 +15,15 @@ namespace {
                              QString::number(info->release_number,16)
                              );
     }
+
+    template<class Block>
+    void forEachDevice(const struct hid_device_info * info, Block && block) {
+        auto iter = info;
+        while ( iter ) {
+            block(iter);
+            iter = iter->next;
+        }
+    }
 }
 
 
@@ -61,22 +70,18 @@ QStringList AvailableDevices::list() const {
     QStringList list;
     list.reserve(10);
 
-    auto iter = pimp->info;
-    while ( iter ) {
+    forEachDevice(pimp->info, [&list](const auto * iter) {
         list.append(textFor(iter));
-        iter = iter->next;
-    }
+    });
     return list;
 }
 
 
 qsizetype AvailableDevices::size() const {
     qsizetype size = 0;
-    auto iter = pimp->info;
-    while ( iter ) {
+    forEachDevice(pimp->info, [&size](const auto * iter) {
         ++size;
-        iter = iter->next;
-    }
+    });
     return size;
 }
 
