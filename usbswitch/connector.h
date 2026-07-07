@@ -40,7 +40,7 @@ private:
     void setCachedInfo(const QString &);
 
     QTimer * timer;
-    std::unique_ptr<usbswitch::details::lowlevel::AvailableDevices> enumerator;
+    std::unique_ptr<usbswitch::details::lowlevel::AvailableDevices> availableDevices;
     usbswitch::details::lowlevel::DeviceConnection * currentHandler { nullptr };
     mutable std::mutex cachedInfoMutex;
     QString cachedInfo;
