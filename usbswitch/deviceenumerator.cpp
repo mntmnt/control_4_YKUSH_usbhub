@@ -37,8 +37,7 @@ struct DeviceEnumerator::Pimp {
 };
 
 
-DeviceEnumerator::DeviceEnumerator(QObject *parent):
-    QObject{parent},
+DeviceEnumerator::DeviceEnumerator():
     pimp(std::make_unique<Pimp>()) {
 }
 
@@ -88,15 +87,14 @@ void DeviceEnumerator::update() {
     }
 
     pimp->info = hid_enumerate(VID, PID);
-    emit updated();
 }
 
 
-DeviceConnection * DeviceEnumerator::openDevice() {
+DeviceConnection * DeviceEnumerator::openDevice(QObject * parent) {
     constexpr int firstDevIndex = 0;
     if ( auto iter = pimp->at(firstDevIndex) ) {
         if ( auto device = hid_open_path(iter->path) ) {
-            return new DeviceConnection((HidHandler)device, textAt(firstDevIndex), this);
+            return new DeviceConnection((HidHandler)device, textAt(firstDevIndex), parent);
         }
     }
     return nullptr;

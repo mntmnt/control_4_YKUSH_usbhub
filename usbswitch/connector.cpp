@@ -2,8 +2,11 @@
 #include "deviceenumerator.h"
 #include "deviceconnection.h"
 
+#include <chrono>
 #include <QTimer>
 #include <QDebug>
+
+using namespace std::chrono_literals;
 
 using usbswitch::details::lowlevel::DeviceEnumerator;
 
@@ -12,11 +15,10 @@ namespace usbswitch::details {
 Connector::Connector(QObject *parent):
     QObject{parent},
     timer(new QTimer(this)),
-    enumerator(new DeviceEnumerator(this)) {
+    enumerator(std::make_unique<DeviceEnumerator>()) {
     timer->setSingleShot(true);
 
-    connect(timer, &QTimer::timeout, enumerator.get(), &DeviceEnumerator::update);
-    connect(enumerator.get(), &DeviceEnumerator::updated, this, &Connector::processDeviceList);
+    connect(timer, &QTimer::timeout, this, &Connector::updateDeviceList);
 }
 
 
@@ -39,7 +41,13 @@ void Connector::wait4device() {
         delete currentHandler;
         currentHandler = nullptr;
     }
-    timer->start(1000);
+    timer->start(1s);
+}
+
+
+void Connector::updateDeviceList() {
+    enumerator->update();
+    processDeviceList();
 }
 
 
@@ -48,7 +56,7 @@ void Connector::processDeviceList() {
         qCritical() << "[cnct] TWO devices found. Have no idea what to do :-D. I have only one, so I can't test this case.";
         emit twoDevError(enumerator->list());
     } else if ( enumerator->size() == 1 ) {
-        if ( currentHandler = enumerator->openDevice(); currentHandler != nullptr ) {
+        if ( currentHandler = enumerator->openDevice(this); currentHandler != nullptr ) {
             timer->stop();
             setCachedInfo(currentHandler->details());
             emit connected(currentHandler);

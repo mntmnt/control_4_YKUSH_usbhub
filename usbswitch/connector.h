@@ -31,9 +31,10 @@ public slots:
     void wait4device();
 
 private slots:
-    void processDeviceList();
+    void updateDeviceList();
 
 private:
+    void processDeviceList();
     void setCachedInfo(const QString &);
 
     QTimer * timer;
