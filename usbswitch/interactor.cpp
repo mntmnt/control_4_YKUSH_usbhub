@@ -1,7 +1,9 @@
 #include "interactor.h"
 #include "deviceconnection.h"
+#include "usbswitch/types-.h"
 
 #include <QTimer>
+#include <QDebug>
 
 using namespace std::chrono_literals;
 
@@ -26,7 +28,11 @@ void Interactor::start(usbswitch::details::lowlevel::DeviceConnection * connecti
 
 void Interactor::togglePort(int port, bool on) {
     if ( deviceConnection ) {
-        deviceConnection->togglePort(port, on);
+        if ( isValidPort(port) ) {
+            deviceConnection->togglePort(portFromInt(port), on);
+        } else {
+            qCritical() << "[interactor] invalid port number #" << port;
+        }
     }
 }
 
@@ -42,8 +48,8 @@ void Interactor::setDevice(usbswitch::details::lowlevel::DeviceConnection * newD
 }
 
 
-void Interactor::parseStatus(int port, bool on, QString response) {
-    emit portStateUpdated(port, on, response);
+void Interactor::parseStatus(usbswitch::details::Port port, bool on, QString response) {
+    emit portStateUpdated(static_cast<int>(port), on, response);
 }
 
 }

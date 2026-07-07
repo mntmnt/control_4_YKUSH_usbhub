@@ -17,7 +17,9 @@ namespace usbswitch::details::lowlevel {
 
 namespace {
 using CommandCode = uint8_t;
-const auto RGSTRD = qRegisterMetaType<usbswitch::details::lowlevel::Response>("usbswitch::details::lowlevel::Response");
+const auto RGSTRDR = qRegisterMetaType<usbswitch::details::lowlevel::Response>("usbswitch::details::lowlevel::Response");
+const auto RGSTRDP = qRegisterMetaType<usbswitch::details::Port>("usbswitch::details::Port");
+
 constexpr std::chrono::milliseconds ReadTimeout = 100ms;
 constexpr int USBReportIdSize = 1;
 
@@ -43,9 +45,7 @@ enum ExpectedValues {
 };
 
 
-std::pair<Bytes,CommandCode> createTogglePortRequest(int port, bool on) {
-    Q_ASSERT( 1 <= port && port <= 3 );
-
+std::pair<Bytes,CommandCode> createTogglePortRequest(usbswitch::details::Port port, bool on) {
     const uint8_t toggleNibble = on ? PowerUp : PowerDown;
     const uint8_t portNibble = static_cast<uint8_t>(port) & 0x0Fu;
     const CommandCode command    = toggleNibble | portNibble;
@@ -69,7 +69,7 @@ QString inspectHex(const Bytes & bytes) {
 
 
 struct DeviceConnection::DownstreamPortArg {
-    int port;
+    usbswitch::details::Port port;
     bool on;
     CommandCode command;
 };
@@ -96,28 +96,21 @@ QString DeviceConnection::details() const {
 }
 
 
-void DeviceConnection::togglePort(int port, bool on) {
-    const bool validPort = 1 <= port && port <= 3;
+void DeviceConnection::togglePort(Port port, bool on) {
+    const auto && [request, command] = createTogglePortRequest(port, on);
+    const DownstreamPortArg downstreamPort{port, on, command};
 
-    if ( validPort ) {
-        const auto && [request, command] = createTogglePortRequest(port, on);
-        const DownstreamPortArg downstreamPort{port, on, command};
+    qDebug() << "[hidtester] write " << inspectHex(request);
 
-        qDebug() << "[hidtester] write " << inspectHex(request);
+    auto writebytes = hid_write((hid_device*)handler, request.data(), request.size());
+    const bool gone = writebytes < 0;
+    if ( gone ) {
+        qCritical() << "[hidtester][error] device gone" << writebytes << ' ' << hid_error((hid_device*)handler);
 
-        auto writebytes = hid_write((hid_device*)handler, request.data(), request.size());
-        const bool gone = writebytes < 0;
-        if ( gone ) {
-            qCritical() << "[hidtester][error] device gone" << writebytes << ' ' << hid_error((hid_device*)handler);
-
-            emit disconnected();
-        } else {
-            // Q_ASSERT( writebytes == usbswitch::ReportSize+1 ); // Note, unfortunately it's not true because, at least on windows it expands it to the report's size
-            readStatusBack(downstreamPort);
-        }
+        emit disconnected();
     } else {
-        qCritical() << "[hidtester] logic error! invalid port number" << port;
-        Q_ASSERT_X( validPort, __func__, "Logic error! This specific usb switch has 3 ports!" );
+        // Q_ASSERT( writebytes == usbswitch::ReportSize+1 ); // Note, unfortunately it's not true because, at least on windows it expands it to the report's size
+        readStatusBack(downstreamPort);
     }
 }
 

@@ -18,13 +18,13 @@ public:
     QString details() const;
 
 signals:
-    void statusApplied(int port, bool on, QString);
+    void statusApplied(usbswitch::details::Port, bool on, QString);
     void disconnected();
 
     void error(QString);
 
 public slots:
-    void togglePort(int port, bool on);
+    void togglePort(usbswitch::details::Port, bool on);
 
 private:
     void readStatusBack(const DownstreamPortArg &);
