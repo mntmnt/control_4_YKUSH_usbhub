@@ -47,11 +47,13 @@ void Connector::wait4device() {
 
 void Connector::updateDeviceList() {
     enumerator->update();
-    processDeviceList();
+    if ( processDeviceList() == ListProcessingResult::NotOpened ) {
+        wait4device();
+    }
 }
 
 
-void Connector::processDeviceList() {
+Connector::ListProcessingResult Connector::processDeviceList() {
     if ( enumerator->size() > 1 ) {
         qCritical() << "[cnct] TWO devices found. Have no idea what to do :-D. I have only one, so I can't test this case.";
         emit twoDevError(enumerator->list());
@@ -60,13 +62,14 @@ void Connector::processDeviceList() {
             timer->stop();
             setCachedInfo(currentHandler->details());
             emit connected(currentHandler);
-            return;
+
+            return ListProcessingResult::Opened;
         } else {
             qCritical() << "[cnct] Failed to connect";
             emit failedToConnect();
         }
     }
-    wait4device();
+    return ListProcessingResult::NotOpened;
 }
 
 

@@ -17,6 +17,8 @@ namespace usbswitch::details {
 class Connector : public QObject {
     Q_OBJECT
 public:
+    enum class ListProcessingResult { NotOpened, Opened };
+
     explicit Connector(QObject *parent = nullptr);
     ~Connector();
 
@@ -34,7 +36,7 @@ private slots:
     void updateDeviceList();
 
 private:
-    void processDeviceList();
+    ListProcessingResult processDeviceList();
     void setCachedInfo(const QString &);
 
     QTimer * timer;
