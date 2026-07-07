@@ -20,7 +20,6 @@ namespace {
 
 struct AvailableDevices::Pimp {
     struct hid_device_info * info = nullptr;
-    QList<QPair<int,QString>> deviceList;
 
     struct hid_device_info * at(qsizetype searchIndex) {
         auto iter = info;
