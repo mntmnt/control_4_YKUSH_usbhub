@@ -1,4 +1,4 @@
-#include "deviceenumerator.h"
+#include "available-devices.h"
 #include "deviceconnection.h"
 #include "constants.h"
 
@@ -18,7 +18,7 @@ namespace {
 }
 
 
-struct DeviceEnumerator::Pimp {
+struct AvailableDevices::Pimp {
     struct hid_device_info * info = nullptr;
     QList<QPair<int,QString>> deviceList;
 
@@ -37,20 +37,20 @@ struct DeviceEnumerator::Pimp {
 };
 
 
-DeviceEnumerator::DeviceEnumerator():
+AvailableDevices::AvailableDevices():
     pimp(std::make_unique<Pimp>()) {
     update();
 }
 
 
-DeviceEnumerator::~DeviceEnumerator() {
+AvailableDevices::~AvailableDevices() {
     if ( pimp->info ) {
         hid_free_enumeration(pimp->info);
     }
 }
 
 
-QString DeviceEnumerator::textAt(qsizetype serchee_index) const {
+QString AvailableDevices::textAt(qsizetype serchee_index) const {
     if ( auto iter = pimp->at(serchee_index) ) {
         return textFor(iter);
     }
@@ -58,7 +58,7 @@ QString DeviceEnumerator::textAt(qsizetype serchee_index) const {
 }
 
 
-QStringList DeviceEnumerator::list() const {
+QStringList AvailableDevices::list() const {
     QStringList list;
     list.reserve(10);
 
@@ -71,7 +71,7 @@ QStringList DeviceEnumerator::list() const {
 }
 
 
-qsizetype DeviceEnumerator::size() const {
+qsizetype AvailableDevices::size() const {
     qsizetype size = 0;
     auto iter = pimp->info;
     while ( iter ) {
@@ -82,14 +82,14 @@ qsizetype DeviceEnumerator::size() const {
 }
 
 
-void DeviceEnumerator::update() {
+void AvailableDevices::update() {
     Q_ASSERT(! pimp->info );
 
     pimp->info = hid_enumerate(VID, PID);
 }
 
 
-DeviceConnection * DeviceEnumerator::openDevice(QObject * parent) {
+DeviceConnection * AvailableDevices::openDevice(QObject * parent) {
     constexpr int firstDevIndex = 0;
     if ( auto iter = pimp->at(firstDevIndex) ) {
         if ( auto device = hid_open_path(iter->path) ) {

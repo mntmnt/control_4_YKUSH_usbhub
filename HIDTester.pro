@@ -20,8 +20,8 @@ CONFIG += c++20  \
 CONFIG += system_tray
 
 SOURCES += \
+        usbswitch/available-devices.cpp \
         usbswitch/deviceconnection.cpp \
-        usbswitch/deviceenumerator.cpp \
         usbswitch/connector.cpp \
         usbswitch/interactor.cpp \
         usbswitch/usb-upstream-switch.cpp \
@@ -56,9 +56,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
+    usbswitch/available-devices.h \
     usbswitch/constants.h \
     usbswitch/deviceconnection.h \
-    usbswitch/deviceenumerator.h \
     usbswitch/connector.h \
     usbswitch/interactor.h \
     usbswitch/types-.h \

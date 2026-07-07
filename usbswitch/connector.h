@@ -8,7 +8,7 @@ class QTimer;
 QT_END_NAMESPACE
 
 namespace usbswitch::details::lowlevel {
-class DeviceEnumerator;
+class AvailableDevices;
 class DeviceConnection;
 }
 
@@ -40,7 +40,7 @@ private:
     void setCachedInfo(const QString &);
 
     QTimer * timer;
-    std::unique_ptr<usbswitch::details::lowlevel::DeviceEnumerator> enumerator;
+    std::unique_ptr<usbswitch::details::lowlevel::AvailableDevices> enumerator;
     usbswitch::details::lowlevel::DeviceConnection * currentHandler { nullptr };
     mutable std::mutex cachedInfoMutex;
     QString cachedInfo;

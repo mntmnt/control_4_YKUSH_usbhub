@@ -1,5 +1,5 @@
 #include "connector.h"
-#include "deviceenumerator.h"
+#include "available-devices.h"
 #include "deviceconnection.h"
 
 #include <chrono>
@@ -8,7 +8,7 @@
 
 using namespace std::chrono_literals;
 
-using usbswitch::details::lowlevel::DeviceEnumerator;
+using usbswitch::details::lowlevel::AvailableDevices;
 
 namespace usbswitch::details {
 
@@ -45,7 +45,7 @@ void Connector::wait4device() {
 
 
 void Connector::updateDeviceList() {
-    enumerator = std::make_unique<DeviceEnumerator>();
+    enumerator = std::make_unique<AvailableDevices>();
 
     if ( processDeviceList() == ListProcessingResult::NotOpened ) {
         wait4device();

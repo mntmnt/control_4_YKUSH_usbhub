@@ -7,10 +7,10 @@ namespace usbswitch::details::lowlevel {
 
 class DeviceConnection;
 
-class DeviceEnumerator {
+class AvailableDevices final {
 public:
-    explicit DeviceEnumerator();
-    ~DeviceEnumerator();
+    explicit AvailableDevices();
+    ~AvailableDevices();
 
     [[nodiscard]] DeviceConnection * openDevice(QObject * parent);
     [[nodiscard]] qsizetype size() const;
