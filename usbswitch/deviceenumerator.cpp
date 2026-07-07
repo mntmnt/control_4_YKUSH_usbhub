@@ -39,6 +39,7 @@ struct DeviceEnumerator::Pimp {
 
 DeviceEnumerator::DeviceEnumerator():
     pimp(std::make_unique<Pimp>()) {
+    update();
 }
 
 
@@ -82,9 +83,7 @@ qsizetype DeviceEnumerator::size() const {
 
 
 void DeviceEnumerator::update() {
-    if ( pimp->info ) {
-        hid_free_enumeration(pimp->info);
-    }
+    Q_ASSERT(! pimp->info );
 
     pimp->info = hid_enumerate(VID, PID);
 }

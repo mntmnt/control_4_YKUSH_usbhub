@@ -14,8 +14,7 @@ namespace usbswitch::details {
 
 Connector::Connector(QObject *parent):
     QObject{parent},
-    timer(new QTimer(this)),
-    enumerator(std::make_unique<DeviceEnumerator>()) {
+    timer(new QTimer(this)) {
     timer->setSingleShot(true);
 
     connect(timer, &QTimer::timeout, this, &Connector::updateDeviceList);
@@ -46,7 +45,8 @@ void Connector::wait4device() {
 
 
 void Connector::updateDeviceList() {
-    enumerator->update();
+    enumerator = std::make_unique<DeviceEnumerator>();
+
     if ( processDeviceList() == ListProcessingResult::NotOpened ) {
         wait4device();
     }

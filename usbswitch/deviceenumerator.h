@@ -13,14 +13,11 @@ public:
     ~DeviceEnumerator();
 
     [[nodiscard]] DeviceConnection * openDevice(QObject * parent);
-
     [[nodiscard]] qsizetype size() const;
-
     [[nodiscard]] QStringList list() const;
 
-    void update();
-
 private:
+    void update();
     QString textAt(qsizetype) const;
 
     struct Pimp;
