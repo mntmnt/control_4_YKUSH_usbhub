@@ -4,6 +4,7 @@
 
 #include <QTimer>
 
+using namespace std::chrono_literals;
 namespace usbswitch {
 
 USBUpstreamSwitch::USBUpstreamSwitch(QObject * parent):
@@ -26,7 +27,7 @@ USBUpstreamSwitch::USBUpstreamSwitch(QObject * parent):
     connect(interactor, & details::Interactor::portStateUpdated, this, &USBUpstreamSwitch::portStateUpdated);
     connect(interactor, & details::Interactor::error,            this, &USBUpstreamSwitch::errorReported);
 
-    QTimer::singleShot(100, connector, &details::Connector::wait4device);
+    QTimer::singleShot(100ms, connector, &details::Connector::wait4device);
     start();
 }
 
@@ -54,7 +55,7 @@ void USBUpstreamSwitch::setConnected(bool on) {
 void USBUpstreamSwitch::stopService() {
     requestInterruption();
     quit();
-    wait(200);
+    wait(QDeadlineTimer{200ms});
 }
 
 
