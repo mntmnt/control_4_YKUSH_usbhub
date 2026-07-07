@@ -29,7 +29,7 @@ void Interactor::start(usbswitch::details::lowlevel::DeviceConnection * connecti
 void Interactor::togglePort(int port, bool on) {
     if ( deviceConnection ) {
         if ( isValidPort(port) ) {
-            deviceConnection->togglePort(portFromInt(port), on);
+            deviceConnection->togglePort(portFromInt(port), portStateFrom(on));
         } else {
             qCritical() << "[interactor] invalid port number #" << port;
         }
@@ -48,8 +48,8 @@ void Interactor::setDevice(usbswitch::details::lowlevel::DeviceConnection * newD
 }
 
 
-void Interactor::parseStatus(usbswitch::details::Port port, bool on, QString response) {
-    emit portStateUpdated(static_cast<int>(port), on, response);
+void Interactor::parseStatus(usbswitch::details::Port port, usbswitch::details::PortState state, QString response) {
+    emit portStateUpdated(static_cast<int>(port), static_cast<bool>(state), response);
 }
 
 }

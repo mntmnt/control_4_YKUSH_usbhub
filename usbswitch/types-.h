@@ -17,6 +17,11 @@ enum class Port : uint8_t {
     Port3 = 3
 };
 
+enum class PortState : bool {
+    Off = false,
+    On = true
+};
+
 
 inline bool isValidPort(int port) {
     return static_cast<int>(Port::Port1) <= port && port <= static_cast<int>(Port::Port3);
@@ -30,5 +35,9 @@ inline Port portFromInt(int port) {
     throw std::invalid_argument("Invalid port number");
 }
 
+
+inline PortState portStateFrom(bool on) {
+    return on ? PortState::On : PortState::Off;
+}
 
 }

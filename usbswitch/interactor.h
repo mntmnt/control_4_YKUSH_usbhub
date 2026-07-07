@@ -28,7 +28,7 @@ public slots:
     void togglePort(int, bool on);
 
 private slots:
-    void parseStatus(usbswitch::details::Port, bool on, QString);
+    void parseStatus(usbswitch::details::Port, usbswitch::details::PortState, QString);
 
 private:
     void setDevice(usbswitch::details::lowlevel::DeviceConnection *);

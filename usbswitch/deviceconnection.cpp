@@ -19,6 +19,7 @@ namespace {
 using CommandCode = uint8_t;
 const auto RGSTRDR = qRegisterMetaType<usbswitch::details::lowlevel::Response>("usbswitch::details::lowlevel::Response");
 const auto RGSTRDP = qRegisterMetaType<usbswitch::details::Port>("usbswitch::details::Port");
+const auto RGSTRDS = qRegisterMetaType<usbswitch::details::PortState>("usbswitch::details::PortState");
 
 constexpr std::chrono::milliseconds ReadTimeout = 100ms;
 constexpr int USBReportIdSize = 1;
@@ -45,8 +46,8 @@ enum ExpectedValues {
 };
 
 
-std::pair<Bytes,CommandCode> createTogglePortRequest(usbswitch::details::Port port, bool on) {
-    const uint8_t toggleNibble = on ? PowerUp : PowerDown;
+std::pair<Bytes,CommandCode> createTogglePortRequest(Port port, PortState state) {
+    const uint8_t toggleNibble = state == PortState::On ? PowerUp : PowerDown;
     const uint8_t portNibble = static_cast<uint8_t>(port) & 0x0Fu;
     const CommandCode command    = toggleNibble | portNibble;
 
@@ -69,8 +70,8 @@ QString inspectHex(const Bytes & bytes) {
 
 
 struct DeviceConnection::DownstreamPortArg {
-    usbswitch::details::Port port;
-    bool on;
+    Port port;
+    PortState on;
     CommandCode command;
 };
 
@@ -96,9 +97,9 @@ QString DeviceConnection::details() const {
 }
 
 
-void DeviceConnection::togglePort(Port port, bool on) {
-    const auto && [request, command] = createTogglePortRequest(port, on);
-    const DownstreamPortArg downstreamPort{port, on, command};
+void DeviceConnection::togglePort(Port port, PortState state) {
+    const auto && [request, command] = createTogglePortRequest(port, state);
+    const DownstreamPortArg downstreamPort{port, state, command};
 
     qDebug() << "[hidtester] write " << inspectHex(request);
 
