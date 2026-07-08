@@ -7,9 +7,10 @@ Item {
 
     required property bool manyDevices
     required property var  deviceList
+    required property string errorMessage
 
     Component.onCompleted: {
-        console.log(">>> " + deviceList.length)
+        console.log(">>> " + (deviceList ? deviceList.length : -1))
         console.log(">>> " + deviceList)
     }
 
@@ -27,7 +28,7 @@ Item {
         color: "white"
         font.bold: true
         font.pointSize: 24
-        text: manyDevices ? qsTr("Too many devices connected") : qsTr("Some error")
+        text: manyDevices ? qsTr("Too many devices connected") : (errorMessage || qsTr("<Some error>"))
     }
 
     ListView {
@@ -49,7 +50,7 @@ Item {
                 color: "orange"
                 Text {
                     id: contactInfo
-                    text: index + ": " + modelData
+                    text: (index + 1) + ": " + modelData
                     color: "white"
                     font.bold: true
                     font.pointSize: 12
@@ -58,6 +59,7 @@ Item {
         }
 
         model: deviceList
+        visible: manyDevices
         delegate: contactsDelegate
     }
 }

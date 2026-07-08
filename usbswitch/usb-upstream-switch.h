@@ -35,6 +35,7 @@ signals:
     void deviceDisconnected();
 
     void errorTooMuch(QStringList);
+    void errorConnectionFailed(QString);
     void deviceInfoChanged();
 
     void portStateUpdated(int, bool, QString);

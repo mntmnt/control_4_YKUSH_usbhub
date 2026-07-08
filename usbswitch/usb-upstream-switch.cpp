@@ -19,6 +19,8 @@ USBUpstreamSwitch::USBUpstreamSwitch(QObject * parent):
     connect(connectionManager, &details::ConnectionManager::connected,  this, &USBUpstreamSwitch::deviceConnected);
     connect(connectionManager, &details::ConnectionManager::connected,  this, &USBUpstreamSwitch::deviceInfoChanged);
     connect(connectionManager, &details::ConnectionManager::twoDevError,this, &USBUpstreamSwitch::errorTooMuch);
+    connect(connectionManager, &details::ConnectionManager::failedToConnect,
+            this, &USBUpstreamSwitch::errorConnectionFailed);
 
     deviceAdapter = new details::DeviceAdapter;
     deviceAdapter->moveToThread(this);
