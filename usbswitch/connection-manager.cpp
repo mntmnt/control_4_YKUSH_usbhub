@@ -37,10 +37,7 @@ void ConnectionManager::wait4device() {
 
     setCachedInfo(QString{});
 
-    if ( currentHandler ) {
-        delete currentHandler;
-        currentHandler = nullptr;
-    }
+    currentHandler.reset();
     timer->start(1s);
 }
 
@@ -59,10 +56,10 @@ ConnectionManager::ConnectionStatus ConnectionManager::tryToConnect() {
         qCritical() << "[cnct] TWO devices found. Have no idea what to do :-D. I have only one, so I can't test this case.";
         emit twoDevError(availableDevices->list());
     } else if ( availableDevices->size() == 1 ) {
-        if ( currentHandler = availableDevices->openDevice(this); currentHandler != nullptr ) {
+        if ( currentHandler = availableDevices->openDevice(); currentHandler != nullptr ) {
             timer->stop();
             setCachedInfo(currentHandler->details());
-            emit connected(currentHandler);
+            emit connected(currentHandler.get());
 
             return ConnectionStatus::Opened;
         } else {

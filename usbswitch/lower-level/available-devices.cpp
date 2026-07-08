@@ -98,11 +98,11 @@ void AvailableDevices::update() {
 }
 
 
-UsbSwitchDevice * AvailableDevices::openDevice(QObject * parent) {
+std::unique_ptr<UsbSwitchDevice> AvailableDevices::openDevice() const {
     constexpr int firstDevIndex = 0;
     if ( auto iter = pimp->at(firstDevIndex) ) {
         if ( auto device = hid_open_path(iter->path) ) {
-            return new UsbSwitchDevice((HidHandler)device, textAt(firstDevIndex), parent);
+            return std::make_unique<UsbSwitchDevice>((HidHandler)device, textAt(firstDevIndex));
         }
     }
     return nullptr;

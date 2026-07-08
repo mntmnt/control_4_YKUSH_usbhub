@@ -19,7 +19,7 @@ public:
 
     [[nodiscard]] static std::unique_ptr<AvailableDevices> enumerate();
 
-    [[nodiscard]] UsbSwitchDevice * openDevice(QObject * parent);
+    [[nodiscard]] std::unique_ptr<UsbSwitchDevice> openDevice() const;
     [[nodiscard]] qsizetype size() const;
     [[nodiscard]] QStringList list() const;
 
