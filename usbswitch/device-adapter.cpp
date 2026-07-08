@@ -1,4 +1,4 @@
-#include "interactor.h"
+#include "device-adapter.h"
 
 #include "lower-level/usb-switch-device.h"
 #include "lower-level/types-.h"

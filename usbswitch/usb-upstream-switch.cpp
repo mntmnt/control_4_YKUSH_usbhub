@@ -1,6 +1,6 @@
 #include "usb-upstream-switch.h"
 #include "connection-manager.h"
-#include "interactor.h"
+#include "device-adapter.h"
 
 #include <QTimer>
 #include <QDeadlineTimer>
