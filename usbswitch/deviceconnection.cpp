@@ -69,21 +69,21 @@ QString inspectHex(const Bytes & bytes) {
 }
 
 
-struct DeviceConnection::DownstreamPortArg {
+struct UsbSwitchDevice::DownstreamPortArg {
     Port port;
     PortState on;
     CommandCode command;
 };
 
 
-DeviceConnection::DeviceConnection(HidHandler handler, QString info, QObject *parent):
+UsbSwitchDevice::UsbSwitchDevice(HidHandler handler, QString info, QObject *parent):
     QObject{parent},
     handler(handler),
     deviceInfo(info) {
 }
 
 
-DeviceConnection::~DeviceConnection() {
+UsbSwitchDevice::~UsbSwitchDevice() {
     if ( handler ) {
         qDebug() << "[hidtester] closing connection: " << deviceInfo;
         hid_close((hid_device*)handler);
@@ -92,12 +92,12 @@ DeviceConnection::~DeviceConnection() {
 }
 
 
-QString DeviceConnection::details() const {
+QString UsbSwitchDevice::details() const {
     return deviceInfo;
 }
 
 
-void DeviceConnection::togglePort(Port port, PortState state) {
+void UsbSwitchDevice::togglePort(Port port, PortState state) {
     const auto && [request, command] = createTogglePortRequest(port, state);
     const DownstreamPortArg downstreamPort{port, state, command};
 
@@ -116,7 +116,7 @@ void DeviceConnection::togglePort(Port port, PortState state) {
 }
 
 
-void DeviceConnection::readStatusBack(const DownstreamPortArg & downstreamPortArg) {
+void UsbSwitchDevice::readStatusBack(const DownstreamPortArg & downstreamPortArg) {
     Response response(ReportSize, 0x00);
 
     const auto readbytes = hid_read_timeout((hid_device*)handler, response.data(), response.size(), static_cast<int>(ReadTimeout.count()));
@@ -136,7 +136,7 @@ void DeviceConnection::readStatusBack(const DownstreamPortArg & downstreamPortAr
 }
 
 
-void DeviceConnection::processStatusResponse(const DownstreamPortArg & downstreamPortArg, const Response & response) {
+void UsbSwitchDevice::processStatusResponse(const DownstreamPortArg & downstreamPortArg, const Response & response) {
     const bool success = response[SuccessIndex] == SuccessValue;
 
     if ( success ) {

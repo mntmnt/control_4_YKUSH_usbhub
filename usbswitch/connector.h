@@ -9,7 +9,7 @@ QT_END_NAMESPACE
 
 namespace usbswitch::details::lowlevel {
 class AvailableDevices;
-class DeviceConnection;
+class UsbSwitchDevice;
 }
 
 namespace usbswitch::details {
@@ -25,7 +25,7 @@ public:
     QString getDeviceInfo() const;
 
 signals:
-    void connected(usbswitch::details::lowlevel::DeviceConnection *);
+    void connected(usbswitch::details::lowlevel::UsbSwitchDevice *);
     void twoDevError(QStringList);
     void failedToConnect();
 
@@ -41,7 +41,7 @@ private:
 
     QTimer * timer;
     std::unique_ptr<usbswitch::details::lowlevel::AvailableDevices> availableDevices;
-    usbswitch::details::lowlevel::DeviceConnection * currentHandler { nullptr };
+    usbswitch::details::lowlevel::UsbSwitchDevice * currentHandler { nullptr };
     mutable std::mutex cachedInfoMutex;
     QString cachedInfo;
 };

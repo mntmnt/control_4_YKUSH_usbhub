@@ -6,14 +6,14 @@
 
 namespace usbswitch::details::lowlevel {
 
-class DeviceConnection : public QObject {
+class UsbSwitchDevice : public QObject {
     Q_OBJECT
 
 public:
     struct DownstreamPortArg;
 
-    explicit DeviceConnection(HidHandler, QString info, QObject *parent = nullptr);
-    ~DeviceConnection();
+    explicit UsbSwitchDevice(HidHandler, QString info, QObject *parent = nullptr);
+    ~UsbSwitchDevice();
 
     QString details() const;
 

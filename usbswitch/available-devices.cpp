@@ -98,11 +98,11 @@ void AvailableDevices::update() {
 }
 
 
-DeviceConnection * AvailableDevices::openDevice(QObject * parent) {
+UsbSwitchDevice * AvailableDevices::openDevice(QObject * parent) {
     constexpr int firstDevIndex = 0;
     if ( auto iter = pimp->at(firstDevIndex) ) {
         if ( auto device = hid_open_path(iter->path) ) {
-            return new DeviceConnection((HidHandler)device, textAt(firstDevIndex), parent);
+            return new UsbSwitchDevice((HidHandler)device, textAt(firstDevIndex), parent);
         }
     }
     return nullptr;

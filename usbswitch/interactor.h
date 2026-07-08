@@ -24,16 +24,16 @@ signals:
     void error(QString);
 
 public slots:
-    void start(usbswitch::details::lowlevel::DeviceConnection *);
+    void start(usbswitch::details::lowlevel::UsbSwitchDevice *);
     void togglePort(int, bool on);
 
 private slots:
     void parseStatus(usbswitch::details::Port, usbswitch::details::PortState, QString);
 
 private:
-    void setDevice(usbswitch::details::lowlevel::DeviceConnection *);
+    void setDevice(lowlevel::UsbSwitchDevice *);
 
-    QPointer<usbswitch::details::lowlevel::DeviceConnection> deviceConnection { nullptr };
+    QPointer<lowlevel::UsbSwitchDevice> switchDevice { nullptr };
 
 };
 

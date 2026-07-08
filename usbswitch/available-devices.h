@@ -5,7 +5,7 @@
 
 namespace usbswitch::details::lowlevel {
 
-class DeviceConnection;
+class UsbSwitchDevice;
 
 class AvailableDevices final {
     struct Private {
@@ -19,7 +19,7 @@ public:
 
     [[nodiscard]] static std::unique_ptr<AvailableDevices> enumerate();
 
-    [[nodiscard]] DeviceConnection * openDevice(QObject * parent);
+    [[nodiscard]] UsbSwitchDevice * openDevice(QObject * parent);
     [[nodiscard]] qsizetype size() const;
     [[nodiscard]] QStringList list() const;
 
