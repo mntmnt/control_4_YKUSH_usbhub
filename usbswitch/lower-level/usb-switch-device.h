@@ -2,7 +2,7 @@
 
 #include <QObject>
 
-#include "usbswitch/types-.h"
+#include "types-.h"
 
 namespace usbswitch::details::lowlevel {
 

@@ -1,6 +1,7 @@
 #include "interactor.h"
-#include "usb-switch-device.h"
-#include "usbswitch/types-.h"
+
+#include "lower-level/usb-switch-device.h"
+#include "lower-level/types-.h"
 
 #include <QTimer>
 #include <QDebug>

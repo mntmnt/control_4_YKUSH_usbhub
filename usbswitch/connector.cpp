@@ -1,6 +1,7 @@
 #include "connector.h"
-#include "available-devices.h"
-#include "usb-switch-device.h"
+
+#include "lower-level/available-devices.h"
+#include "lower-level/usb-switch-device.h"
 
 #include <chrono>
 #include <QTimer>
