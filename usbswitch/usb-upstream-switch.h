@@ -10,7 +10,7 @@ QT_END_NAMESPACE
 
 namespace usbswitch::details {
 class ConnectionManager;
-class Interactor;
+class DeviceAdapter;
 }
 
 
@@ -50,8 +50,8 @@ public slots:
 private:
     std::atomic<bool> connected { false };
 
-    details::ConnectionManager  * connectionManager { nullptr };
-    details::Interactor * interactor { nullptr };
+    details::ConnectionManager * connectionManager { nullptr };
+    details::DeviceAdapter * deviceAdapter { nullptr };
 
 };
 

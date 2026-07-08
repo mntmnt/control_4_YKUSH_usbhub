@@ -11,12 +11,12 @@ QT_END_NAMESPACE
 
 namespace usbswitch::details {
 
-class Interactor : public QObject {
+class DeviceAdapter : public QObject {
     Q_OBJECT
 
 public:
-    explicit Interactor(QObject *parent = nullptr);
-    ~Interactor();
+    explicit DeviceAdapter(QObject *parent = nullptr);
+    ~DeviceAdapter();
 
 signals:
     void disconnected();

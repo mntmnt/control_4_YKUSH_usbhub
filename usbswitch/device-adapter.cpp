@@ -12,20 +12,20 @@ namespace {
 
 namespace usbswitch::details {
 
-Interactor::Interactor(QObject *parent):
+DeviceAdapter::DeviceAdapter(QObject *parent):
     QObject{parent} {
 }
 
 
-Interactor::~Interactor() = default;
+DeviceAdapter::~DeviceAdapter() = default;
 
 
-void Interactor::start(usbswitch::details::lowlevel::UsbSwitchDevice * connection) {
+void DeviceAdapter::start(usbswitch::details::lowlevel::UsbSwitchDevice * connection) {
     setDevice(connection);
 }
 
 
-void Interactor::togglePort(int port, bool on) {
+void DeviceAdapter::togglePort(int port, bool on) {
     if ( switchDevice ) {
         if ( isValidPort(port) ) {
             switchDevice->togglePort(portFromInt(port), portStateFrom(on));
@@ -36,18 +36,18 @@ void Interactor::togglePort(int port, bool on) {
 }
 
 
-void Interactor::setDevice(lowlevel::UsbSwitchDevice * newDevice) {
+void DeviceAdapter::setDevice(lowlevel::UsbSwitchDevice * newDevice) {
     Q_ASSERT( newDevice );
     using lowlevel::UsbSwitchDevice;
 
     switchDevice = newDevice;
-    connect(switchDevice, &UsbSwitchDevice::disconnected,  this, &Interactor::disconnected);
-    connect(switchDevice, &UsbSwitchDevice::statusApplied, this, &Interactor::parseStatus);
-    connect(switchDevice, &UsbSwitchDevice::error,         this, &Interactor::error);
+    connect(switchDevice, &UsbSwitchDevice::disconnected,  this, &DeviceAdapter::disconnected);
+    connect(switchDevice, &UsbSwitchDevice::statusApplied, this, &DeviceAdapter::parseStatus);
+    connect(switchDevice, &UsbSwitchDevice::error,         this, &DeviceAdapter::error);
 }
 
 
-void Interactor::parseStatus(usbswitch::details::Port port, usbswitch::details::PortState state, QString response) {
+void DeviceAdapter::parseStatus(usbswitch::details::Port port, usbswitch::details::PortState state, QString response) {
     emit portStateUpdated(static_cast<int>(port), static_cast<bool>(state), response);
 }
 

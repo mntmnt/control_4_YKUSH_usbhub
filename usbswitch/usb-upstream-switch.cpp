@@ -20,16 +20,16 @@ USBUpstreamSwitch::USBUpstreamSwitch(QObject * parent):
     connect(connectionManager, &details::ConnectionManager::connected,  this, &USBUpstreamSwitch::deviceInfoChanged);
     connect(connectionManager, &details::ConnectionManager::twoDevError,this, &USBUpstreamSwitch::errorTooMuch);
 
-    interactor = new  details::Interactor;
-    interactor->moveToThread(this);
-    connect(this, &QThread::finished, interactor, & details::Interactor::deleteLater);
+    deviceAdapter = new details::DeviceAdapter;
+    deviceAdapter->moveToThread(this);
+    connect(this, &QThread::finished, deviceAdapter, &details::DeviceAdapter::deleteLater);
 
-    connect(connectionManager,  &details::ConnectionManager::connected,     interactor, &details::Interactor::start);
-    connect(interactor, &details::Interactor::disconnected, connectionManager,  &details::ConnectionManager::wait4device);
-    connect(interactor, &details::Interactor::disconnected, this,       &USBUpstreamSwitch::deviceDisconnected);
+    connect(connectionManager, &details::ConnectionManager::connected, deviceAdapter,    &details::DeviceAdapter::start);
+    connect(deviceAdapter,     &details::DeviceAdapter::disconnected,  connectionManager,&details::ConnectionManager::wait4device);
+    connect(deviceAdapter,     &details::DeviceAdapter::disconnected,  this,             &USBUpstreamSwitch::deviceDisconnected);
 
-    connect(interactor, &details::Interactor::portStateUpdated, this, &USBUpstreamSwitch::portStateUpdated);
-    connect(interactor, &details::Interactor::error,            this, &USBUpstreamSwitch::errorReported);
+    connect(deviceAdapter, &details::DeviceAdapter::portStateUpdated, this, &USBUpstreamSwitch::portStateUpdated);
+    connect(deviceAdapter, &details::DeviceAdapter::error,            this, &USBUpstreamSwitch::errorReported);
 
     QTimer::singleShot(100ms, connectionManager, &details::ConnectionManager::wait4device);
     start();
@@ -64,12 +64,12 @@ void USBUpstreamSwitch::stopService() {
 
 
 void USBUpstreamSwitch::enableUsbPort(int port) {
-    QMetaObject::invokeMethod(interactor, [=,this] { interactor->togglePort(port, true); }, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(deviceAdapter, [=,this] { deviceAdapter->togglePort(port, true); }, Qt::QueuedConnection);
 }
 
 
 void USBUpstreamSwitch::disableUsbPort(int port) {
-    QMetaObject::invokeMethod(interactor, [=,this] { interactor->togglePort(port, false); }, Qt::QueuedConnection);
+    QMetaObject::invokeMethod(deviceAdapter, [=,this] { deviceAdapter->togglePort(port, false); }, Qt::QueuedConnection);
 }
 
 }
