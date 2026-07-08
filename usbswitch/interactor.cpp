@@ -5,10 +5,8 @@
 #include <QTimer>
 #include <QDebug>
 
-using namespace std::chrono_literals;
-
 namespace {
-const bool RGSTRD = qRegisterMetaType<usbswitch::details::lowlevel::UsbSwitchDevice*>("usbswitch::details::lowlevel::UsbSwitchDevice*");
+[[maybe_unused]] const bool RGSTRD = qRegisterMetaType<usbswitch::details::lowlevel::UsbSwitchDevice*>("usbswitch::details::lowlevel::UsbSwitchDevice*");
 }
 
 namespace usbswitch::details {

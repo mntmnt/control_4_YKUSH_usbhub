@@ -3,6 +3,8 @@
 #include "interactor.h"
 
 #include <QTimer>
+#include <QDeadlineTimer>
+#include <chrono>
 
 using namespace std::chrono_literals;
 namespace usbswitch {

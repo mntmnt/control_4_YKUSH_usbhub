@@ -17,9 +17,9 @@ namespace usbswitch::details::lowlevel {
 
 namespace {
 using CommandCode = uint8_t;
-const auto RGSTRDR = qRegisterMetaType<usbswitch::details::lowlevel::Response>("usbswitch::details::lowlevel::Response");
-const auto RGSTRDP = qRegisterMetaType<usbswitch::details::Port>("usbswitch::details::Port");
-const auto RGSTRDS = qRegisterMetaType<usbswitch::details::PortState>("usbswitch::details::PortState");
+[[maybe_unused]] const auto RGSTRDR = qRegisterMetaType<usbswitch::details::lowlevel::Response>("usbswitch::details::lowlevel::Response");
+[[maybe_unused]] const auto RGSTRDP = qRegisterMetaType<usbswitch::details::Port>("usbswitch::details::Port");
+[[maybe_unused]] const auto RGSTRDS = qRegisterMetaType<usbswitch::details::PortState>("usbswitch::details::PortState");
 
 constexpr std::chrono::milliseconds ReadTimeout = 100ms;
 constexpr int USBReportIdSize = 1;

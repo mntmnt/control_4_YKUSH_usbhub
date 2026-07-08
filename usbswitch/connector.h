@@ -2,6 +2,7 @@
 
 #include <QObject>
 #include <mutex>
+#include <memory>
 
 QT_BEGIN_NAMESPACE
 class QTimer;
@@ -17,7 +18,7 @@ namespace usbswitch::details {
 class Connector : public QObject {
     Q_OBJECT
 public:
-    enum class ListProcessingResult { NotOpened, Opened };
+    enum class ConnectionStatus { NotOpened, Opened };
 
     explicit Connector(QObject *parent = nullptr);
     ~Connector();
@@ -36,12 +37,13 @@ private slots:
     void updateDeviceList();
 
 private:
-    ListProcessingResult tryToConnect();
+    ConnectionStatus tryToConnect();
     void setCachedInfo(const QString &);
 
     QTimer * timer;
-    std::unique_ptr<usbswitch::details::lowlevel::AvailableDevices> availableDevices;
-    usbswitch::details::lowlevel::UsbSwitchDevice * currentHandler { nullptr };
+    std::unique_ptr<lowlevel::AvailableDevices> availableDevices;
+    lowlevel::UsbSwitchDevice * currentHandler { nullptr };
+
     mutable std::mutex cachedInfoMutex;
     QString cachedInfo;
 };
