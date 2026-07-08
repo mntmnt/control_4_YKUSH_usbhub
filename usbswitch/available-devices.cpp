@@ -1,5 +1,5 @@
 #include "available-devices.h"
-#include "deviceconnection.h"
+#include "usb-switch-device.h"
 #include "constants.h"
 
 #include "hidapi.h"

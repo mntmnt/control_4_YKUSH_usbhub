@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QPointer>
 
-#include "deviceconnection.h"
+#include "usb-switch-device.h"
 
 QT_BEGIN_NAMESPACE
 class QTimer;

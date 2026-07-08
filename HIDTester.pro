@@ -21,9 +21,9 @@ CONFIG += system_tray
 
 SOURCES += \
         usbswitch/available-devices.cpp \
-        usbswitch/deviceconnection.cpp \
         usbswitch/connector.cpp \
         usbswitch/interactor.cpp \
+        usbswitch/usb-switch-device.cpp \
         usbswitch/usb-upstream-switch.cpp \
         main.cpp
 
@@ -58,10 +58,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 HEADERS += \
     usbswitch/available-devices.h \
     usbswitch/constants.h \
-    usbswitch/deviceconnection.h \
     usbswitch/connector.h \
     usbswitch/interactor.h \
     usbswitch/types-.h \
+    usbswitch/usb-switch-device.h \
     usbswitch/usb-upstream-switch.h
 
 include(hidapi.pri)

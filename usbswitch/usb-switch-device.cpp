@@ -1,4 +1,4 @@
-#include "deviceconnection.h"
+#include "usb-switch-device.h"
 #include "constants.h"
 
 #include <QDebug>

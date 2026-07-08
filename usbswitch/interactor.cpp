@@ -1,5 +1,5 @@
 #include "interactor.h"
-#include "deviceconnection.h"
+#include "usb-switch-device.h"
 #include "usbswitch/types-.h"
 
 #include <QTimer>
