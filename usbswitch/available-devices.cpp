@@ -45,7 +45,7 @@ struct AvailableDevices::Pimp {
 };
 
 
-AvailableDevices::AvailableDevices():
+AvailableDevices::AvailableDevices(AvailableDevices::Private):
     pimp(std::make_unique<Pimp>()) {
     update();
 }
@@ -55,6 +55,11 @@ AvailableDevices::~AvailableDevices() {
     if ( pimp->info ) {
         hid_free_enumeration(pimp->info);
     }
+}
+
+
+std::unique_ptr<AvailableDevices> AvailableDevices::enumerate() {
+    return std::make_unique<AvailableDevices>(Private{});
 }
 
 
@@ -79,7 +84,7 @@ QStringList AvailableDevices::list() const {
 
 qsizetype AvailableDevices::size() const {
     qsizetype size = 0;
-    forEachDevice(pimp->info, [&size](const auto * iter) {
+    forEachDevice(pimp->info, [&size](const auto * /*iter*/) {
         ++size;
     });
     return size;

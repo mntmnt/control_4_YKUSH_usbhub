@@ -45,15 +45,15 @@ void Connector::wait4device() {
 
 
 void Connector::updateDeviceList() {
-    availableDevices = std::make_unique<AvailableDevices>();
+    availableDevices = AvailableDevices::enumerate();
 
-    if ( processDeviceList() == ListProcessingResult::NotOpened ) {
+    if ( tryToConnect() == ListProcessingResult::NotOpened ) {
         wait4device();
     }
 }
 
 
-Connector::ListProcessingResult Connector::processDeviceList() {
+Connector::ListProcessingResult Connector::tryToConnect() {
     if ( availableDevices->size() > 1 ) {
         qCritical() << "[cnct] TWO devices found. Have no idea what to do :-D. I have only one, so I can't test this case.";
         emit twoDevError(availableDevices->list());

@@ -36,7 +36,7 @@ private slots:
     void updateDeviceList();
 
 private:
-    ListProcessingResult processDeviceList();
+    ListProcessingResult tryToConnect();
     void setCachedInfo(const QString &);
 
     QTimer * timer;

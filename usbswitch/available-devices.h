@@ -8,9 +8,16 @@ namespace usbswitch::details::lowlevel {
 class DeviceConnection;
 
 class AvailableDevices final {
+    struct Private {
+        explicit Private() = default;
+    };
+
 public:
-    explicit AvailableDevices();
+
+    explicit AvailableDevices(Private);
     ~AvailableDevices();
+
+    [[nodiscard]] static std::unique_ptr<AvailableDevices> enumerate();
 
     [[nodiscard]] DeviceConnection * openDevice(QObject * parent);
     [[nodiscard]] qsizetype size() const;
