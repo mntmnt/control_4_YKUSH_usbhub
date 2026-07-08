@@ -22,7 +22,7 @@ CONFIG += system_tray
 SOURCES += \
         usbswitch/lower-level/available-devices.cpp \
         usbswitch/lower-level/usb-switch-device.cpp \
-        usbswitch/connector.cpp \
+        usbswitch/connection-manager.cpp \
         usbswitch/interactor.cpp \
         usbswitch/usb-upstream-switch.cpp \
         main.cpp
@@ -60,7 +60,7 @@ HEADERS += \
     usbswitch/lower-level/types-.h \
     usbswitch/lower-level/available-devices.h \
     usbswitch/lower-level/usb-switch-device.h \
-    usbswitch/connector.h \
+    usbswitch/connection-manager.h \
     usbswitch/interactor.h \
     usbswitch/usb-upstream-switch.h
 

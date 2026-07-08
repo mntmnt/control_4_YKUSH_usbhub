@@ -1,5 +1,5 @@
 #include "usb-upstream-switch.h"
-#include "connector.h"
+#include "connection-manager.h"
 #include "interactor.h"
 
 #include <QTimer>

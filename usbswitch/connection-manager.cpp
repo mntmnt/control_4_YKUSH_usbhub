@@ -1,4 +1,4 @@
-#include "connector.h"
+#include "connection-manager.h"
 
 #include "lower-level/available-devices.h"
 #include "lower-level/usb-switch-device.h"
