@@ -1,4 +1,4 @@
-#include "deviceconnection.h"
+#include "usb-switch-device.h"
 #include "constants.h"
 
 #include <QDebug>
@@ -17,7 +17,10 @@ namespace usbswitch::details::lowlevel {
 
 namespace {
 using CommandCode = uint8_t;
-const auto RGSTRD = qRegisterMetaType<usbswitch::details::lowlevel::Response>("usbswitch::details::lowlevel::Response");
+[[maybe_unused]] const auto RGSTRDR = qRegisterMetaType<usbswitch::details::lowlevel::Response>("usbswitch::details::lowlevel::Response");
+[[maybe_unused]] const auto RGSTRDP = qRegisterMetaType<usbswitch::details::Port>("usbswitch::details::Port");
+[[maybe_unused]] const auto RGSTRDS = qRegisterMetaType<usbswitch::details::PortState>("usbswitch::details::PortState");
+
 constexpr std::chrono::milliseconds ReadTimeout = 100ms;
 constexpr int USBReportIdSize = 1;
 
@@ -43,10 +46,8 @@ enum ExpectedValues {
 };
 
 
-std::pair<Bytes,CommandCode> createTogglePortRequest(int port, bool on) {
-    Q_ASSERT( 1 <= port && port <= 3 );
-
-    const uint8_t toggleNibble = on ? PowerUp : PowerDown;
+std::pair<Bytes,CommandCode> createTogglePortRequest(Port port, PortState state) {
+    const uint8_t toggleNibble = state == PortState::On ? PowerUp : PowerDown;
     const uint8_t portNibble = static_cast<uint8_t>(port) & 0x0Fu;
     const CommandCode command    = toggleNibble | portNibble;
 
@@ -68,21 +69,21 @@ QString inspectHex(const Bytes & bytes) {
 }
 
 
-struct DeviceConnection::DownstreamPortArg {
-    int port;
-    bool on;
+struct UsbSwitchDevice::DownstreamPortArg {
+    Port port;
+    PortState on;
     CommandCode command;
 };
 
 
-DeviceConnection::DeviceConnection(HidHandler handler, QString info, QObject *parent):
+UsbSwitchDevice::UsbSwitchDevice(HidHandler handler, QString info, QObject *parent):
     QObject{parent},
     handler(handler),
     deviceInfo(info) {
 }
 
 
-DeviceConnection::~DeviceConnection() {
+UsbSwitchDevice::~UsbSwitchDevice() {
     if ( handler ) {
         qDebug() << "[hidtester] closing connection: " << deviceInfo;
         hid_close((hid_device*)handler);
@@ -91,38 +92,31 @@ DeviceConnection::~DeviceConnection() {
 }
 
 
-QString DeviceConnection::details() const {
+QString UsbSwitchDevice::details() const {
     return deviceInfo;
 }
 
 
-void DeviceConnection::togglePort(int port, bool on) {
-    const bool validPort = 1 <= port && port <= 3;
+void UsbSwitchDevice::togglePort(Port port, PortState state) {
+    const auto && [request, command] = createTogglePortRequest(port, state);
+    const DownstreamPortArg downstreamPort{port, state, command};
 
-    if ( validPort ) {
-        const auto && [request, command] = createTogglePortRequest(port, on);
-        const DownstreamPortArg downstreamPort{port, on, command};
+    qDebug() << "[hidtester] write " << inspectHex(request);
 
-        qDebug() << "[hidtester] write " << inspectHex(request);
+    auto writebytes = hid_write((hid_device*)handler, request.data(), request.size());
+    const bool gone = writebytes < 0;
+    if ( gone ) {
+        qCritical() << "[hidtester][error] device gone" << writebytes << ' ' << hid_error((hid_device*)handler);
 
-        auto writebytes = hid_write((hid_device*)handler, request.data(), request.size());
-        const bool gone = writebytes < 0;
-        if ( gone ) {
-            qCritical() << "[hidtester][error] device gone" << writebytes << ' ' << hid_error((hid_device*)handler);
-
-            emit disconnected();
-        } else {
-            // Q_ASSERT( writebytes == usbswitch::ReportSize+1 ); // Note, unfortunately it's not true because, at least on windows it expands it to the report's size
-            readStatusBack(downstreamPort);
-        }
+        emit disconnected();
     } else {
-        qCritical() << "[hidtester] logic error! invalid port number" << port;
-        Q_ASSERT_X( validPort, __func__, "Logic error! This specific usb switch has 3 ports!" );
+        // Q_ASSERT( writebytes == usbswitch::ReportSize+1 ); // Note, unfortunately it's not true because, at least on windows it expands it to the report's size
+        readStatusBack(downstreamPort);
     }
 }
 
 
-void DeviceConnection::readStatusBack(const DownstreamPortArg & downstreamPortArg) {
+void UsbSwitchDevice::readStatusBack(const DownstreamPortArg & downstreamPortArg) {
     Response response(ReportSize, 0x00);
 
     const auto readbytes = hid_read_timeout((hid_device*)handler, response.data(), response.size(), static_cast<int>(ReadTimeout.count()));
@@ -142,7 +136,7 @@ void DeviceConnection::readStatusBack(const DownstreamPortArg & downstreamPortAr
 }
 
 
-void DeviceConnection::processStatusResponse(const DownstreamPortArg & downstreamPortArg, const Response & response) {
+void UsbSwitchDevice::processStatusResponse(const DownstreamPortArg & downstreamPortArg, const Response & response) {
     const bool success = response[SuccessIndex] == SuccessValue;
 
     if ( success ) {

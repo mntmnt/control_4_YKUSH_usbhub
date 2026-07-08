@@ -2,29 +2,29 @@
 
 #include <QObject>
 
-#include "usbswitch/types-.h"
+#include "types-.h"
 
 namespace usbswitch::details::lowlevel {
 
-class DeviceConnection : public QObject {
+class UsbSwitchDevice : public QObject {
     Q_OBJECT
 
 public:
     struct DownstreamPortArg;
 
-    explicit DeviceConnection(HidHandler, QString info, QObject *parent = nullptr);
-    ~DeviceConnection();
+    explicit UsbSwitchDevice(HidHandler, QString info, QObject *parent = nullptr);
+    ~UsbSwitchDevice();
 
     QString details() const;
 
 signals:
-    void statusApplied(int port, bool on, QString);
+    void statusApplied(usbswitch::details::Port, usbswitch::details::PortState, QString);
     void disconnected();
 
     void error(QString);
 
 public slots:
-    void togglePort(int port, bool on);
+    void togglePort(usbswitch::details::Port, usbswitch::details::PortState);
 
 private:
     void readStatusBack(const DownstreamPortArg &);

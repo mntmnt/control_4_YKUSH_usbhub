@@ -1,5 +1,5 @@
-#include "deviceenumerator.h"
-#include "deviceconnection.h"
+#include "available-devices.h"
+#include "usb-switch-device.h"
 #include "constants.h"
 
 #include "hidapi.h"
@@ -15,12 +15,20 @@ namespace {
                              QString::number(info->release_number,16)
                              );
     }
+
+    template<class Block>
+    void forEachDevice(const struct hid_device_info * info, Block && block) {
+        auto iter = info;
+        while ( iter ) {
+            block(iter);
+            iter = iter->next;
+        }
+    }
 }
 
 
-struct DeviceEnumerator::Pimp {
+struct AvailableDevices::Pimp {
     struct hid_device_info * info = nullptr;
-    QList<QPair<int,QString>> deviceList;
 
     struct hid_device_info * at(qsizetype searchIndex) {
         auto iter = info;
@@ -37,20 +45,25 @@ struct DeviceEnumerator::Pimp {
 };
 
 
-DeviceEnumerator::DeviceEnumerator(QObject *parent):
-    QObject{parent},
+AvailableDevices::AvailableDevices(AvailableDevices::Private):
     pimp(std::make_unique<Pimp>()) {
+    update();
 }
 
 
-DeviceEnumerator::~DeviceEnumerator() {
+AvailableDevices::~AvailableDevices() {
     if ( pimp->info ) {
         hid_free_enumeration(pimp->info);
     }
 }
 
 
-QString DeviceEnumerator::textAt(qsizetype serchee_index) const {
+std::unique_ptr<AvailableDevices> AvailableDevices::enumerate() {
+    return std::make_unique<AvailableDevices>(Private{});
+}
+
+
+QString AvailableDevices::textAt(qsizetype serchee_index) const {
     if ( auto iter = pimp->at(serchee_index) ) {
         return textFor(iter);
     }
@@ -58,45 +71,38 @@ QString DeviceEnumerator::textAt(qsizetype serchee_index) const {
 }
 
 
-QStringList DeviceEnumerator::list() const {
+QStringList AvailableDevices::list() const {
     QStringList list;
     list.reserve(10);
 
-    auto iter = pimp->info;
-    while ( iter ) {
+    forEachDevice(pimp->info, [&list](const auto * iter) {
         list.append(textFor(iter));
-        iter = iter->next;
-    }
+    });
     return list;
 }
 
 
-qsizetype DeviceEnumerator::size() const {
+qsizetype AvailableDevices::size() const {
     qsizetype size = 0;
-    auto iter = pimp->info;
-    while ( iter ) {
+    forEachDevice(pimp->info, [&size](const auto * /*iter*/) {
         ++size;
-        iter = iter->next;
-    }
+    });
     return size;
 }
 
 
-void DeviceEnumerator::update() {
-    if ( pimp->info ) {
-        hid_free_enumeration(pimp->info);
-    }
+void AvailableDevices::update() {
+    Q_ASSERT(! pimp->info );
 
     pimp->info = hid_enumerate(VID, PID);
-    emit updated();
 }
 
 
-DeviceConnection * DeviceEnumerator::openDevice() {
+std::unique_ptr<UsbSwitchDevice> AvailableDevices::openDevice() const {
     constexpr int firstDevIndex = 0;
     if ( auto iter = pimp->at(firstDevIndex) ) {
         if ( auto device = hid_open_path(iter->path) ) {
-            return new DeviceConnection((HidHandler)device, textAt(firstDevIndex), this);
+            return std::make_unique<UsbSwitchDevice>((HidHandler)device, textAt(firstDevIndex));
         }
     }
     return nullptr;
