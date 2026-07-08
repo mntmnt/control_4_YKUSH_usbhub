@@ -12,26 +12,26 @@ namespace usbswitch {
 USBUpstreamSwitch::USBUpstreamSwitch(QObject * parent):
     QThread{parent} {
 
-    this->connector = new details::Connector;
-    this->connector->moveToThread(this);
-    connect(this, &QThread::finished, connector, &details::Connector::deleteLater);
+    this->connectionManager = new details::ConnectionManager;
+    this->connectionManager->moveToThread(this);
+    connect(this, &QThread::finished, connectionManager, &details::ConnectionManager::deleteLater);
 
-    connect(connector, &details::Connector::connected,  this, &USBUpstreamSwitch::deviceConnected);
-    connect(connector, &details::Connector::connected,  this, &USBUpstreamSwitch::deviceInfoChanged);
-    connect(connector, &details::Connector::twoDevError,this, &USBUpstreamSwitch::errorTooMuch);
+    connect(connectionManager, &details::ConnectionManager::connected,  this, &USBUpstreamSwitch::deviceConnected);
+    connect(connectionManager, &details::ConnectionManager::connected,  this, &USBUpstreamSwitch::deviceInfoChanged);
+    connect(connectionManager, &details::ConnectionManager::twoDevError,this, &USBUpstreamSwitch::errorTooMuch);
 
     interactor = new  details::Interactor;
     interactor->moveToThread(this);
     connect(this, &QThread::finished, interactor, & details::Interactor::deleteLater);
 
-    connect(connector,  &details::Connector::connected,     interactor, &details::Interactor::start);
-    connect(interactor, &details::Interactor::disconnected, connector,  &details::Connector::wait4device);
+    connect(connectionManager,  &details::ConnectionManager::connected,     interactor, &details::Interactor::start);
+    connect(interactor, &details::Interactor::disconnected, connectionManager,  &details::ConnectionManager::wait4device);
     connect(interactor, &details::Interactor::disconnected, this,       &USBUpstreamSwitch::deviceDisconnected);
 
     connect(interactor, &details::Interactor::portStateUpdated, this, &USBUpstreamSwitch::portStateUpdated);
     connect(interactor, &details::Interactor::error,            this, &USBUpstreamSwitch::errorReported);
 
-    QTimer::singleShot(100ms, connector, &details::Connector::wait4device);
+    QTimer::singleShot(100ms, connectionManager, &details::ConnectionManager::wait4device);
     start();
 }
 
@@ -45,7 +45,7 @@ bool USBUpstreamSwitch::isConnected() const {
 
 
 QString USBUpstreamSwitch::deviceInfo() const {
-    return connector->getDeviceInfo();
+    return connectionManager->getDeviceInfo();
 }
 
 

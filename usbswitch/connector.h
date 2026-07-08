@@ -15,13 +15,14 @@ class UsbSwitchDevice;
 
 namespace usbswitch::details {
 
-class Connector : public QObject {
+class ConnectionManager : public QObject {
     Q_OBJECT
+
 public:
     enum class ConnectionStatus { NotOpened, Opened };
 
-    explicit Connector(QObject *parent = nullptr);
-    ~Connector();
+    explicit ConnectionManager(QObject *parent = nullptr);
+    ~ConnectionManager();
 
     QString getDeviceInfo() const;
 

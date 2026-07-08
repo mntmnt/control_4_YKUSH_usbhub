@@ -9,7 +9,7 @@ class QTimer;
 QT_END_NAMESPACE
 
 namespace usbswitch::details {
-class Connector;
+class ConnectionManager;
 class Interactor;
 }
 
@@ -50,7 +50,7 @@ public slots:
 private:
     std::atomic<bool> connected { false };
 
-    details::Connector  * connector { nullptr };
+    details::ConnectionManager  * connectionManager { nullptr };
     details::Interactor * interactor { nullptr };
 
 };

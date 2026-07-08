@@ -13,26 +13,26 @@ using usbswitch::details::lowlevel::AvailableDevices;
 
 namespace usbswitch::details {
 
-Connector::Connector(QObject *parent):
+ConnectionManager::ConnectionManager(QObject *parent):
     QObject{parent},
     timer(new QTimer(this)) {
     timer->setSingleShot(true);
 
-    connect(timer, &QTimer::timeout, this, &Connector::updateDeviceList);
+    connect(timer, &QTimer::timeout, this, &ConnectionManager::updateDeviceList);
 }
 
 
-Connector::~Connector() = default;
+ConnectionManager::~ConnectionManager() = default;
 
 
-QString Connector::getDeviceInfo() const {
+QString ConnectionManager::getDeviceInfo() const {
     std::lock_guard guard(cachedInfoMutex);
 
     return cachedInfo;
 }
 
 
-void Connector::wait4device() {
+void ConnectionManager::wait4device() {
     Q_ASSERT( timer->isSingleShot() );
 
     setCachedInfo(QString{});
@@ -45,7 +45,7 @@ void Connector::wait4device() {
 }
 
 
-void Connector::updateDeviceList() {
+void ConnectionManager::updateDeviceList() {
     availableDevices = AvailableDevices::enumerate();
 
     if ( tryToConnect() == ConnectionStatus::NotOpened ) {
@@ -54,7 +54,7 @@ void Connector::updateDeviceList() {
 }
 
 
-Connector::ConnectionStatus Connector::tryToConnect() {
+ConnectionManager::ConnectionStatus ConnectionManager::tryToConnect() {
     if ( availableDevices->size() > 1 ) {
         qCritical() << "[cnct] TWO devices found. Have no idea what to do :-D. I have only one, so I can't test this case.";
         emit twoDevError(availableDevices->list());
@@ -74,7 +74,7 @@ Connector::ConnectionStatus Connector::tryToConnect() {
 }
 
 
-void Connector::setCachedInfo(const QString & deviceInfo) {
+void ConnectionManager::setCachedInfo(const QString & deviceInfo) {
     std::lock_guard guard(cachedInfoMutex);
 
     cachedInfo = deviceInfo;
