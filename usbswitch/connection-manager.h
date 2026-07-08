@@ -43,7 +43,7 @@ private:
 
     QTimer * timer;
     std::unique_ptr<lowlevel::AvailableDevices> availableDevices;
-    std::unique_ptr<lowlevel::UsbSwitchDevice>  currentHandler;
+    std::unique_ptr<lowlevel::UsbSwitchDevice>  currentDevice;
 
     mutable std::mutex cachedInfoMutex;
     QString cachedInfo;

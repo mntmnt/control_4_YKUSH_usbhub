@@ -21,6 +21,7 @@ DeviceAdapter::~DeviceAdapter() = default;
 
 
 void DeviceAdapter::start(usbswitch::details::lowlevel::UsbSwitchDevice * connection) {
+    Q_ASSERT( connection );
     setDevice(connection);
 }
 
