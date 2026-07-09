@@ -43,8 +43,9 @@ void DeviceAdapter::setDevice(lowlevel::UsbSwitchDevice * newDevice) {
 
     switchDevice = newDevice;
     connect(switchDevice, &UsbSwitchDevice::disconnected,  this, &DeviceAdapter::disconnected);
-    connect(switchDevice, &UsbSwitchDevice::statusApplied, this, &DeviceAdapter::parseStatus);
+    connect(switchDevice, &UsbSwitchDevice::statusAppliedSuccessfully, this, &DeviceAdapter::parseStatus);
     connect(switchDevice, &UsbSwitchDevice::error,         this, &DeviceAdapter::error);
+    connect(switchDevice, &UsbSwitchDevice::fatalError,    this, &DeviceAdapter::fatalError);
 }
 
 

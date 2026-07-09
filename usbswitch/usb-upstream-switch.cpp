@@ -32,6 +32,7 @@ USBUpstreamSwitch::USBUpstreamSwitch(QObject * parent):
 
     connect(deviceAdapter, &details::DeviceAdapter::portStateUpdated, this, &USBUpstreamSwitch::portStateUpdated);
     connect(deviceAdapter, &details::DeviceAdapter::error,            this, &USBUpstreamSwitch::errorReported);
+    connect(deviceAdapter, &details::DeviceAdapter::fatalError,       this, &USBUpstreamSwitch::errorConnectionFailed);
 
     QTimer::singleShot(100ms, connectionManager, &details::ConnectionManager::wait4device);
     start();

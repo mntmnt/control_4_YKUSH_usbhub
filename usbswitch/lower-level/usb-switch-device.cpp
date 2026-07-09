@@ -23,6 +23,7 @@ using CommandCode = uint8_t;
 
 constexpr std::chrono::milliseconds ReadTimeout = 100ms;
 constexpr int USBReportIdSize = 1;
+constexpr unsigned FatalTimeoutSequenceCount = 3;
 
 enum ToggleNibble {
     PowerUp   = 0x10,
@@ -62,7 +63,7 @@ std::pair<Bytes,CommandCode> createTogglePortRequest(Port port, PortState state)
 QString inspectHex(const Bytes & bytes) {
     QStringList list;
     for ( auto byte : bytes ) {
-        list.append( QString::number(static_cast<unsigned>(byte), 16) );
+        list.append( QStringLiteral("0x") + QString::number(static_cast<unsigned>(byte), 16) );
     }
     return '{' + list.join(", ") + '}';
 }
@@ -87,7 +88,7 @@ UsbSwitchDevice::~UsbSwitchDevice() {
     if ( handler ) {
         qDebug() << "[hidtester] closing connection: " << deviceInfo;
         hid_close((hid_device*)handler);
-        handler = 0x00;
+        handler = nullptr;
     }
 }
 
@@ -106,7 +107,7 @@ void UsbSwitchDevice::togglePort(Port port, PortState state) {
     auto writebytes = hid_write((hid_device*)handler, request.data(), request.size());
     const bool gone = writebytes < 0;
     if ( gone ) {
-        qCritical() << "[hidtester][error] device gone" << writebytes << ' ' << hid_error((hid_device*)handler);
+        qCritical() << "[hidtester][error] device gone #" << writebytes << ' ' << QString::fromWCharArray(hid_error((hid_device*)handler));
 
         emit disconnected();
     } else {
@@ -125,13 +126,24 @@ void UsbSwitchDevice::readStatusBack(const DownstreamPortArg & downstreamPortArg
     const bool gone = readbytes < 0;
     const bool received = readbytes > 0;
     if ( gone ) {
-        qCritical() << "[hidtester][error] device gone" << readbytes << hid_error((hid_device*)handler);
+        qCritical() << "[hidtester][error] device gone #" << readbytes
+                    << " error: "      << QString::fromWCharArray(hid_error((hid_device*)handler))
+                    << " read-error: " << QString::fromWCharArray(hid_read_error((hid_device*)handler));
 
         emit disconnected();
     } else if ( received ) {
         Q_ASSERT_X( readbytes == ReportSize, __func__, "It should not return different size" );
+        timeoutErrorCount = 0;
 
         processStatusResponse(downstreamPortArg, response);
+    } else {
+        qCritical() << "[hidtester][error] device timeout #" << readbytes
+                    << " error: "      << QString::fromWCharArray(hid_error((hid_device*)handler))
+                    << " read-error: " << QString::fromWCharArray(hid_read_error((hid_device*)handler));
+        emit error(tr("Timeout waiting for device response"));
+        if ( timeoutErrorCount++ > FatalTimeoutSequenceCount ) {
+            emit fatalError(tr("Too many timeouts waiting for device response"));
+        }
     }
 }
 
@@ -143,7 +155,7 @@ void UsbSwitchDevice::processStatusResponse(const DownstreamPortArg & downstream
         if ( response[CommandIndex] != downstreamPortArg.command ) {
             emit error(tr("Unexpected command echo. Must be %1h: %2").arg(QString::number(downstreamPortArg.command, 16), inspectHex(response)));
         } else {
-            emit statusApplied(downstreamPortArg.port, downstreamPortArg.on, "Bytes: " + inspectHex(response));
+            emit statusAppliedSuccessfully(downstreamPortArg.port, downstreamPortArg.on, "Bytes: " + inspectHex(response));
         }
     } else {
         emit error(tr("Unexpected 1st byte. Must be %1h: %2").arg(SuccessValue, 0, 16).arg(inspectHex(response)));
