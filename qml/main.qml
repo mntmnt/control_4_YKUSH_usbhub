@@ -37,24 +37,41 @@ ApplicationWindow {
     }
 
     StackView {
+        readonly property string defaultPage: "NoDevicePage.qml"
+        property string currentName: defaultPage
+
         id: contentFrame
         anchors.fill: parent
-        initialItem: "NoDevicePage.qml"
+        initialItem: defaultPage
+
+        function showQmlPage(qmlFile : string, properties) {
+            if ( qmlFile !== currentName ) {
+                replace(qmlFile, properties)
+                currentName = qmlFile
+            } else {
+                Object.assign(currentItem, properties)
+            }
+        }
     }
 
     Connections {
         target: USBSwitch
 
         function onDeviceConnected() {
-            contentFrame.replace("DeviceControlPage.qml")
+            contentFrame.showQmlPage("DeviceControlPage.qml")
         }
 
         function onDeviceDisconnected() {
-            contentFrame.replace("NoDevicePage.qml");
+            contentFrame.showQmlPage("NoDevicePage.qml");
         }
 
         function onErrorTooMuch(deviceList) {
-            contentFrame.replace("ErrorPage.qml", {"manyDevices": true, "deviceList": deviceList});
+            contentFrame.showQmlPage("ErrorPage.qml", {"manyDevices": true, deviceList, errorMessage: null});
+        }
+
+
+        function onErrorConnectionFailed(errorMessage) {
+            contentFrame.showQmlPage("ErrorPage.qml", {"manyDevices": false, "deviceList": null, errorMessage});
         }
     }
 }

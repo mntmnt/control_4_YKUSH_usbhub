@@ -22,6 +22,7 @@ signals:
     void disconnected();
     void portStateUpdated(int, bool, QString);
     void error(QString);
+    void fatalError(QString);
 
 public slots:
     void start(usbswitch::details::lowlevel::UsbSwitchDevice *);

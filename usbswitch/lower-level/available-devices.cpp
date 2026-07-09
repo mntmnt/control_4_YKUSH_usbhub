@@ -1,9 +1,9 @@
 #include "available-devices.h"
 #include "usb-switch-device.h"
 #include "constants.h"
+#include "usbswitch/exceptions-.h"
 
 #include "hidapi.h"
-#pragma comment (lib, "Setupapi.lib")
 
 namespace usbswitch::details::lowlevel {
 
@@ -103,9 +103,15 @@ std::unique_ptr<UsbSwitchDevice> AvailableDevices::openDevice() const {
     if ( auto iter = pimp->at(firstDevIndex) ) {
         if ( auto device = hid_open_path(iter->path) ) {
             return std::make_unique<UsbSwitchDevice>((HidHandler)device, textAt(firstDevIndex));
+        } else {
+            const auto errorMessage = QObject::tr("Failed to open device: %1 (%2)").arg(
+                QString::fromWCharArray(hid_error(nullptr)), textAt(firstDevIndex)
+            );
+            throw FailToOpenException(errorMessage);
         }
+    } else {
+        throw FailToOpenException(QObject::tr("No device found"));
     }
-    return nullptr;
 }
 
 }

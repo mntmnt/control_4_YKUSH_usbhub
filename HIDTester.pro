@@ -57,6 +57,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     usbswitch/device-adapter.h \
+    usbswitch/exceptions-.h \
     usbswitch/lower-level/constants.h \
     usbswitch/lower-level/types-.h \
     usbswitch/lower-level/available-devices.h \

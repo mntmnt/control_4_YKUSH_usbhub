@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QObject>
+#include <QStringList>
 #include <mutex>
 #include <memory>
 
@@ -29,7 +30,7 @@ public:
 signals:
     void connected(usbswitch::details::lowlevel::UsbSwitchDevice *);
     void twoDevError(QStringList);
-    void failedToConnect();
+    void failedToConnect(QString);
 
 public slots:
     void wait4device();
@@ -40,6 +41,9 @@ private slots:
 private:
     ConnectionStatus tryToConnect();
     void setCachedInfo(const QString &);
+    void processTooManyDevices(const QStringList &);
+    void processFailedToConnect(const QString &);
+    ConnectionStatus connectToASingleAvailableDevice();
 
     QTimer * timer;
     std::unique_ptr<lowlevel::AvailableDevices> availableDevices;

@@ -18,10 +18,11 @@ public:
     QString details() const;
 
 signals:
-    void statusApplied(usbswitch::details::Port, usbswitch::details::PortState, QString);
+    void statusAppliedSuccessfully(usbswitch::details::Port, usbswitch::details::PortState, QString);
     void disconnected();
 
     void error(QString);
+    void fatalError(QString);
 
 public slots:
     void togglePort(usbswitch::details::Port, usbswitch::details::PortState);
@@ -32,6 +33,7 @@ private:
 
     HidHandler handler;
     const QString deviceInfo;
+    unsigned timeoutErrorCount { 0 };
 };
 
 }

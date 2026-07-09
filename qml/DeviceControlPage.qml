@@ -64,6 +64,11 @@ Item {
         font.bold: true
         font.pointSize: 12
         text: ""
+        width: infoLabel.width
+        horizontalAlignment: Text.AlignHCenter
+        wrapMode: Text.Wrap
+        maximumLineCount: 3
+        elide: Text.ElideRight
     }
 
 }
