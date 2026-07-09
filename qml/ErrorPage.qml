@@ -25,10 +25,15 @@ Item {
         anchors.top:  parent.top
         anchors.horizontalCenter: parent.horizontalCenter
         anchors.topMargin: 100
+        width: Math.max(0, (parent ? parent.width : 0) - 40)
+        horizontalAlignment: Text.AlignHCenter
+        wrapMode: Text.Wrap
+        maximumLineCount: 4
+        elide: Text.ElideRight
         color: "white"
         font.bold: true
         font.pointSize: 24
-        text: manyDevices ? qsTr("Too many devices connected") : (errorMessage || qsTr("<Some error>"))
+        text: manyDevices ? qsTr("Too many devices connected:") : (errorMessage ?? qsTr("<Some unknown error>"))
     }
 
     ListView {
